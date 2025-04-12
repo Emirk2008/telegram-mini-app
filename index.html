@@ -37,4 +37,94 @@
       display: none;
     }
 
-    /* Стиль для кнопок*
+    /* Стиль для кнопок */
+    .button {
+      background-color: #00C853; /* Зеленая кнопка */
+      color: black; /* Черный цвет текста на кнопках */
+      padding: 15px 30px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 10px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #009624; /* Темно-зеленый при наведении */
+    }
+
+    /* Нижнее меню */
+    .footer {
+      display: flex;
+      justify-content: center;
+      padding: 15px;
+      background-color: #1E1E1E;
+      width: 100%;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
+
+    .footer a {
+      color: #00C853;
+      text-decoration: none;
+      font-size: 18px;
+      margin: 0 10px;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Контент (разделы) -->
+  <div id="home" class="content section">
+    <h2>Главная</h2>
+    <p>Здесь будет информация о главной странице.</p>
+  </div>
+
+  <div id="wallet" class="content section">
+    <h2>Кошелек</h2>
+    <p>Здесь будет информация о кошельке.</p>
+  </div>
+
+  <div id="history" class="content section">
+    <h2>Истории</h2>
+    <p>Здесь будет информация о историях.</p>
+  </div>
+
+  <!-- Нижнее меню для переходов -->
+  <div class="footer">
+    <a href="#" class="button" onclick="showSection('home')">Главная</a>
+    <a href="#" class="button" onclick="showSection('wallet')">Кошелек</a>
+    <a href="#" class="button" onclick="showSection('history')">Истории</a>
+  </div>
+
+  <script>
+    // Функция для показа выбранного раздела
+    function showSection(sectionId) {
+      // Скрываем все разделы
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        section.style.display = 'none';
+      });
+
+      // Показываем выбранный раздел
+      const selectedSection = document.getElementById(sectionId);
+      if (selectedSection) {
+        selectedSection.style.display = 'block';
+      }
+    }
+
+    // Показываем главный раздел по умолчанию
+    window.onload = function() {
+      showSection('home'); // Показываем главную страницу при загрузке
+    }
+  </script>
+
+</body>
+</html>
