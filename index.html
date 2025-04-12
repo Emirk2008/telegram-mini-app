@@ -1,34 +1,112 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Мини-приложение Telegram</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мини-приложение</title>
   <style>
+    /* Основные стили */
     body {
-      font-family: sans-serif;
-      background-color: var(--tg-theme-bg-color);
-      color: var(--tg-theme-text-color);
-      padding: 2rem;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #121212; /* Черный фон */
+      color: #00C853; /* Зеленый цвет текста */
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100vh;
       text-align: center;
     }
-    button {
-      padding: 10px 20px;
-      font-size: 18px;
+
+    h1 {
+      margin-top: 30px;
+      color: #00C853; /* Зеленый */
     }
+
+    p {
+      font-size: 18px;
+      color: #B0B0B0; /* Светло-серый для описания */
+    }
+
+    .button {
+      background-color: #00C853; /* Зеленая кнопка */
+      color: white;
+      padding: 15px 30px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 20px;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background-color: #009624; /* Темно-зеленый при наведении */
+    }
+
+    .section {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 50px;
+      flex-grow: 1;
+    }
+
+    .section div {
+      background-color: #1E1E1E; /* Темный фон для разделов */
+      border-radius: 8px;
+      padding: 20px;
+      width: 30%;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .section div h2 {
+      color: #00C853; /* Зеленый для заголовков в разделах */
+    }
+
+    .footer {
+      background-color: #121212;
+      color: #B0B0B0;
+      padding: 10px;
+      position: relative;
+      bottom: 0;
+      width: 100%;
+      text-align: center;
+    }
+
   </style>
 </head>
 <body>
-  <h1>Привет из Telegram Mini App!</h1>
-  <p>Имя пользователя: <span id="username">Загрузка...</span></p>
-  <button onclick="Telegram.WebApp.close()">Закрыть</button>
 
-  <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    document.getElementById("username").textContent =
-      tg.initDataUnsafe.user?.username || "Неизвестно";
-  </script>
+  <!-- Заголовок -->
+  <h1>Добро пожаловать в мини-приложение</h1>
+  <p>Здесь ваши инвестиции становятся возможностями</p>
+
+  <!-- Кнопка для перехода к функционалу -->
+  <a href="https://telegram-mini-app.vercel.app" class="button">Перейти в приложение</a>
+
+  <!-- Основное меню с разделами -->
+  <div class="section">
+    <div>
+      <h2>Главная</h2>
+      <p>Пока что здесь пусто...</p>
+    </div>
+    <div>
+      <h2>Кошелек</h2>
+      <p>Пока что здесь пусто...</p>
+    </div>
+    <div>
+      <h2>Истории</h2>
+      <p>Пока что здесь пусто...</p>
+    </div>
+  </div>
+
+  <!-- Подвал -->
+  <div class="footer">
+    <p>&copy; 2025 Мой Бот</p>
+  </div>
+
 </body>
 </html>
+
