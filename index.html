@@ -24,11 +24,25 @@
       color: #00C853; /* Зеленый */
     }
 
-    p {
-      font-size: 18px;
-      color: #B0B0B0; /* Светло-серый для описания */
+    /* Стиль для разделов */
+    .content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      flex-grow: 1;
     }
 
+    .content h2 {
+      color: #00C853;
+    }
+
+    .section {
+      display: none;
+    }
+
+    /* Стиль для кнопок */
     .button {
       background-color: #00C853; /* Зеленая кнопка */
       color: white;
@@ -46,67 +60,78 @@
       background-color: #009624; /* Темно-зеленый при наведении */
     }
 
-    .section {
+    /* Нижнее меню */
+    .footer {
       display: flex;
       justify-content: space-around;
-      margin-top: 50px;
-      flex-grow: 1;
-    }
-
-    .section div {
-      background-color: #1E1E1E; /* Темный фон для разделов */
-      border-radius: 8px;
-      padding: 20px;
-      width: 30%;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .section div h2 {
-      color: #00C853; /* Зеленый для заголовков в разделах */
-    }
-
-    .footer {
-      background-color: #121212;
-      color: #B0B0B0;
-      padding: 10px;
-      position: relative;
-      bottom: 0;
+      padding: 15px;
+      background-color: #1E1E1E;
       width: 100%;
-      text-align: center;
+      position: fixed;
+      bottom: 0;
+      left: 0;
     }
 
+    .footer a {
+      color: #00C853;
+      text-decoration: none;
+      font-size: 18px;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
   </style>
 </head>
 <body>
 
   <!-- Заголовок -->
   <h1>Добро пожаловать в мини-приложение</h1>
-  <p>Здесь ваши инвестиции становятся возможностями</p>
 
-  <!-- Кнопка для перехода к функционалу -->
-  <a href="https://telegram-mini-app.vercel.app" class="button">Перейти в приложение</a>
-
-  <!-- Основное меню с разделами -->
-  <div class="section">
-    <div>
-      <h2>Главная</h2>
-      <p>Пока что здесь пусто...</p>
-    </div>
-    <div>
-      <h2>Кошелек</h2>
-      <p>Пока что здесь пусто...</p>
-    </div>
-    <div>
-      <h2>Истории</h2>
-      <p>Пока что здесь пусто...</p>
-    </div>
+  <!-- Контент (разделы) -->
+  <div id="home" class="content section">
+    <h2>Главная</h2>
+    <p>Здесь будет информация о главной странице.</p>
   </div>
 
-  <!-- Подвал -->
+  <div id="wallet" class="content section">
+    <h2>Кошелек</h2>
+    <p>Здесь будет информация о кошельке.</p>
+  </div>
+
+  <div id="history" class="content section">
+    <h2>Истории</h2>
+    <p>Здесь будет информация о историях.</p>
+  </div>
+
+  <!-- Нижнее меню для переходов -->
   <div class="footer">
-    <p>&copy; 2025 Мой Бот</p>
+    <a href="#" class="button" onclick="showSection('home')">Главная</a>
+    <a href="#" class="button" onclick="showSection('wallet')">Кошелек</a>
+    <a href="#" class="button" onclick="showSection('history')">Истории</a>
   </div>
+
+  <script>
+    // Функция для показа выбранного раздела
+    function showSection(sectionId) {
+      // Скрываем все разделы
+      const sections = document.querySelectorAll('.section');
+      sections.forEach(section => {
+        section.style.display = 'none';
+      });
+
+      // Показываем выбранный раздел
+      const selectedSection = document.getElementById(sectionId);
+      if (selectedSection) {
+        selectedSection.style.display = 'block';
+      }
+    }
+
+    // Показываем главный раздел по умолчанию
+    window.onload = function() {
+      showSection('home');
+    }
+  </script>
 
 </body>
 </html>
-
