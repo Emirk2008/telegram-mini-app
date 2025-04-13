@@ -2,156 +2,141 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TRX App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Инвестиции</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script defer>
+    window.addEventListener("DOMContentLoaded", () => {
+      const tg = window.Telegram.WebApp;
+      tg.expand();
+
+      const user = tg.initDataUnsafe?.user;
+      if (user) {
+        const fullName = `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim();
+        const username = user.username;
+        const avatarUrl = username
+          ? `https://t.me/i/userpic/320/${username}.jpg`
+          : 'https://via.placeholder.com/150';
+
+        document.getElementById("user-name").textContent = fullName || "Без имени";
+        document.getElementById("avatar").src = avatarUrl;
+      }
+    });
+
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+  </script>
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #0e0e0e;
-      color: white;
+      font-family: sans-serif;
+      background-color: #111;
+      color: #fff;
     }
-    .container {
-      padding: 16px;
-    }
-    .profile {
+
+    .header {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
-    }
-    .avatar {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      margin-right: 12px;
-    }
-    .balance {
-      background-color: #1a1a1a;
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-    }
-    .invest-button {
-      background-color: #00ff00;
-      color: #000;
-      border: none;
-      padding: 12px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-    }
-    .tariffs {
-      display: flex;
-      flex-wrap: wrap;
       gap: 10px;
-      justify-content: center;
-      margin-top: 20px;
-    }
-    .tariff {
-      border: 2px solid #00ff00;
-      color: #00ff00;
       padding: 16px;
-      width: 100px;
-      text-align: center;
-      border-radius: 12px;
-      font-weight: bold;
     }
-    .bottom-nav {
+
+    .header img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+    }
+
+    .tabs {
       position: fixed;
       bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: #1a1a1a;
+      width: 100%;
       display: flex;
-      justify-content: space-around;
-      padding: 12px 0;
+      background-color: #000;
+      border-top: 1px solid #333;
     }
-    .bottom-nav button {
-      background: none;
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      padding: 12px 0;
+      color: #0f0;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .main-btn {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .main-btn button {
+      background-color: #0f0;
+      color: #000;
       border: none;
-      color: white;
-      font-size: 14px;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 8px;
       cursor: pointer;
     }
-    .hidden { display: none; }
+
+    .page {
+      display: none;
+      padding: 20px;
+    }
+
+    #home {
+      display: block;
+    }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="profile">
-      <img class="avatar" id="userPhoto" src="" alt="User">
-      <div>
-        <div id="userName">Имя Фамилия</div>
-      </div>
-    </div>
 
-    <div id="homePage">
-      <div class="balance">
-        <div>Ваш баланс</div>
-        <div style="margin-top: 6px; font-size: 18px; font-weight: bold;">0.00 TRX</div>
-        <div>≈$0.00</div>
-      </div>
-      <button class="invest-button" onclick="showTariffs()">Инвестировать</button>
-    </div>
+  <div class="header">
+    <img id="avatar" src="" alt="Аватар" />
+    <div id="user-name" class="text-lg font-semibold">Загрузка...</div>
+  </div>
 
-    <div id="tariffPage" class="hidden">
-      <div style="color: #00ff00; font-size: 16px; font-weight: bold; margin-bottom: 12px;">Тарифы с 30% прибылью от 10 до 30 дней</div>
-      <div class="tariffs">
-        <div class="tariff">200 TRX</div>
-        <div class="tariff">300 TRX</div>
-        <div class="tariff">400 TRX</div>
-        <div class="tariff">500 TRX</div>
-        <div class="tariff">600 TRX</div>
-        <div class="tariff">800 TRX</div>
-        <div class="tariff">900 TRX</div>
-        <div class="tariff">1,000 TRX</div>
-        <div class="tariff">1,500 TRX</div>
-      </div>
-    </div>
-
-    <div id="walletPage" class="hidden">
-      <div style="text-align:center">Кошелек пока пуст</div>
-    </div>
-
-    <div id="historyPage" class="hidden">
-      <div style="text-align:center">История инвестиций появится здесь</div>
+  <div id="home" class="page">
+    <div class="main-btn">
+      <button onclick="showPage('invest')">Инвестировать</button>
+      <button>Вывести</button>
     </div>
   </div>
 
-  <div class="bottom-nav">
-    <button onclick="navigateTo('home')">Главная</button>
-    <button onclick="navigateTo('wallet')">Кошелек</button>
-    <button onclick="navigateTo('history')">История</button>
+  <div id="invest" class="page">
+    <h2 style="color: #0f0">Тарифы</h2>
+    <div style="margin-top: 10px">
+      <div style="background:#222; padding:15px; border-radius:10px; margin-bottom:10px">
+        <p style="color:white">🔹 <b>Период:</b> 10 дней</p>
+        <p style="color:white">📈 <b>Прибыль:</b> 30%</p>
+        <button style="background:#0f0; color:#000; padding:8px 16px; border:none; border-radius:6px">Инвестировать</button>
+      </div>
+      <div style="background:#222; padding:15px; border-radius:10px; margin-bottom:10px">
+        <p style="color:white">🔹 <b>Период:</b> 30 дней</p>
+        <p style="color:white">📈 <b>Прибыль:</b> 30%</p>
+        <button style="background:#0f0; color:#000; padding:8px 16px; border:none; border-radius:6px">Инвестировать</button>
+      </div>
+    </div>
   </div>
 
-  <script>
-    function navigateTo(page) {
-      document.getElementById('homePage').classList.add('hidden');
-      document.getElementById('tariffPage').classList.add('hidden');
-      document.getElementById('walletPage').classList.add('hidden');
-      document.getElementById('historyPage').classList.add('hidden');
+  <div id="wallet" class="page">
+    <p>Ваш кошелёк пока пуст.</p>
+  </div>
 
-      if (page === 'home') document.getElementById('homePage').classList.remove('hidden');
-      if (page === 'wallet') document.getElementById('walletPage').classList.remove('hidden');
-      if (page === 'history') document.getElementById('historyPage').classList.remove('hidden');
-    }
+  <div id="history" class="page">
+    <p>История операций отсутствует.</p>
+  </div>
 
-    function showTariffs() {
-      navigateTo('tariff');
-      document.getElementById('tariffPage').classList.remove('hidden');
-    }
+  <div class="tabs">
+    <div class="tab" onclick="showPage('home')">Главная</div>
+    <div class="tab" onclick="showPage('wallet')">Кошелёк</div>
+    <div class="tab" onclick="showPage('history')">История</div>
+  </div>
 
-    // Получаем данные из Telegram WebApp
-    const tg = window.Telegram?.WebApp;
-    if (tg) {
-      tg.expand();
-      const user = tg.initDataUnsafe?.user;
-      if (user) {
-        document.getElementById("userName").textContent = `${user.first_name || ''} ${user.last_name || ''}`;
-        if (user.photo_url) document.getElementById("userPhoto").src = user.photo_url;
-      }
-    }
-  </script>
 </body>
 </html>
