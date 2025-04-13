@@ -2,129 +2,160 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Мини-приложение</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    /* Основные стили */
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      padding: 0;
-      background-color: #121212; /* Черный фон */
-      color: #00C853; /* Зеленый цвет текста */
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      min-height: 100vh;
-      text-align: center;
+      font-family: Arial, sans-serif;
+      background-color: #0d0d0d;
+      color: white;
     }
 
-    /* Стиль для разделов */
-    .content {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+    header {
       padding: 20px;
-      flex-grow: 1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .content h2 {
-      color: #00C853;
+    header img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    header .username {
+      font-weight: bold;
+      font-size: 18px;
+      color: white;
+    }
+
+    .main {
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 15px;
+    }
+
+    .card-title {
+      color: #00c853;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
+
+    .card-value {
+      font-size: 24px;
+      color: white;
+    }
+
+    .card-sub {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .green-button {
+      background-color: #00c853;
+      color: black;
+      border: none;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 16px;
+      width: 100%;
+      font-weight: bold;
+    }
+
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #1a1a1a;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+      border-top: 1px solid #333;
+    }
+
+    footer button {
+      background: none;
+      border: none;
+      color: #999;
+      font-size: 14px;
+    }
+
+    footer button.active {
+      color: #00c853;
     }
 
     .section {
       display: none;
     }
 
-    /* Стиль для кнопок */
-    .button {
-      background-color: #00C853; /* Зеленая кнопка */
-      color: black; /* Черный цвет текста на кнопках */
-      padding: 15px 30px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      font-size: 16px;
-      margin: 10px;
-      border-radius: 5px;
-      transition: background-color 0.3s ease;
-    }
-
-    .button:hover {
-      background-color: #009624; /* Темно-зеленый при наведении */
-    }
-
-    /* Нижнее меню */
-    .footer {
-      display: flex;
-      justify-content: center;
-      padding: 15px;
-      background-color: #1E1E1E;
-      width: 100%;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-    }
-
-    .footer a {
-      color: black; /* Черный цвет текста на кнопках */
-      text-decoration: none;
-      font-size: 18px;
-      margin: 0 10px;
-    }
-
-    .footer a:hover {
-      text-decoration: underline;
+    .section.active {
+      display: block;
     }
   </style>
 </head>
 <body>
 
-  <!-- Контент (разделы) -->
-  <div id="home" class="content section">
-    <h2>Главная</h2>
-    <p>Здесь будет информация о главной странице.</p>
+  <header>
+    <img src="https://via.placeholder.com/50" alt="Аватар">
+    <div class="username" id="userName">Имя Фамилия</div>
+  </header>
+
+  <div class="main">
+    <div id="home" class="section active">
+      <div class="card">
+        <div class="card-title">TRX</div>
+        <div class="card-value">0.00</div>
+        <div class="card-sub">≈ $0.00</div>
+      </div>
+
+      <div class="card">
+        <p>Начните зарабатывать за период от 12 до 24 часов.</p>
+        <button class="green-button">Инвестировать</button>
+      </div>
+    </div>
+
+    <div id="wallet" class="section">
+      <div class="card">
+        <p>Здесь будет информация о кошельке</p>
+      </div>
+    </div>
+
+    <div id="history" class="section">
+      <div class="card">
+        <p>Здесь будет история транзакций</p>
+      </div>
+    </div>
   </div>
 
-  <div id="wallet" class="content section">
-    <h2>Кошелек</h2>
-    <p>Здесь будет информация о кошельке.</p>
-  </div>
-
-  <div id="history" class="content section">
-    <h2>Истории</h2>
-    <p>Здесь будет информация о историях.</p>
-  </div>
-
-  <!-- Нижнее меню для переходов -->
-  <div class="footer">
-    <a href="#" class="button" onclick="showSection('home')">Главная</a>
-    <a href="#" class="button" onclick="showSection('wallet')">Кошелек</a>
-    <a href="#" class="button" onclick="showSection('history')">Истории</a>
-  </div>
+  <footer>
+    <button onclick="showSection('home', this)" class="active">Главная</button>
+    <button onclick="showSection('wallet', this)">Кошелек</button>
+    <button onclick="showSection('history', this)">История</button>
+  </footer>
 
   <script>
-    // Функция для показа выбранного раздела
-    function showSection(sectionId) {
-      // Скрываем все разделы
-      const sections = document.querySelectorAll('.section');
-      sections.forEach(section => {
-        section.style.display = 'none';
-      });
+    function showSection(id, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
 
-      // Показываем выбранный раздел
-      const selectedSection = document.getElementById(sectionId);
-      if (selectedSection) {
-        selectedSection.style.display = 'block';
-      }
+      document.querySelectorAll('footer button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
     }
 
-    // Показываем главный раздел по умолчанию
-    window.onload = function() {
-      showSection('home'); // Показываем главную страницу при загрузке
+    // Автоматически вставим имя Telegram-пользователя, если вы его передаёте
+    window.Telegram?.WebApp?.ready();
+    const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (tgUser?.first_name) {
+      document.getElementById("userName").textContent = `${tgUser.first_name} ${tgUser.last_name || ''}`;
     }
   </script>
-
 </body>
 </html>
