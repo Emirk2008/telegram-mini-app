@@ -3,149 +3,155 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Инвестиции</title>
+  <title>TRX App</title>
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
-      background-color: #0a0a0a;
+      font-family: Arial, sans-serif;
+      background-color: #0e0e0e;
       color: white;
     }
-    .header {
-      padding: 20px;
+    .container {
+      padding: 16px;
+    }
+    .profile {
       display: flex;
       align-items: center;
-      gap: 15px;
-      background-color: #1a1a1a;
+      margin-bottom: 20px;
     }
-    .header img {
+    .avatar {
       width: 50px;
       height: 50px;
       border-radius: 50%;
+      margin-right: 12px;
     }
-    .header .username {
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .section {
-      padding: 20px;
-    }
-    .balance-card {
-      background-color: #111;
+    .balance {
+      background-color: #1a1a1a;
       border-radius: 12px;
-      padding: 15px;
+      padding: 16px;
       margin-bottom: 20px;
-    }
-    .balance-card p {
-      margin: 5px 0;
-      color: #999;
-    }
-    .balance-card .value {
-      font-size: 20px;
-      color: #00ff00;
     }
     .invest-button {
       background-color: #00ff00;
-      color: black;
-      padding: 15px;
-      text-align: center;
-      border-radius: 10px;
-      font-weight: bold;
-      margin: 0 20px;
+      color: #000;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
-    }
-    .tabs {
-      position: fixed;
-      bottom: 0;
       width: 100%;
-      display: flex;
-      justify-content: space-around;
-      background-color: #111;
-      padding: 10px 0;
     }
-    .tab {
-      text-align: center;
-      color: #888;
-      font-size: 12px;
-    }
-    .tab.active {
-      color: #00ff00;
-    }
-    .tariff-container {
+    .tariffs {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 10px;
-      padding: 20px;
+      justify-content: center;
+      margin-top: 20px;
     }
-    .tariff-button {
+    .tariff {
       border: 2px solid #00ff00;
       color: #00ff00;
-      background-color: transparent;
-      padding: 15px;
+      padding: 16px;
+      width: 100px;
+      text-align: center;
       border-radius: 12px;
       font-weight: bold;
-      min-width: 100px;
-      text-align: center;
     }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #1a1a1a;
+      display: flex;
+      justify-content: space-around;
+      padding: 12px 0;
+    }
+    .bottom-nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .hidden { display: none; }
   </style>
 </head>
 <body>
-  <!-- Главная страница -->
-  <div id="main">
-    <div class="header">
-      <img id="avatar" src="https://via.placeholder.com/50" alt="avatar" />
-      <div class="username" id="username">Имя Фамилия</div>
-    </div>
-    <div class="section">
-      <div class="balance-card">
-        <p>Ваш баланс</p>
-        <div class="value">0.00 TRX</div>
-        <p>≈$0.00</p>
+  <div class="container">
+    <div class="profile">
+      <img class="avatar" id="userPhoto" src="" alt="User">
+      <div>
+        <div id="userName">Имя Фамилия</div>
       </div>
-      <div class="invest-button" onclick="showInvest()">Инвестировать</div>
+    </div>
+
+    <div id="homePage">
+      <div class="balance">
+        <div>Ваш баланс</div>
+        <div style="margin-top: 6px; font-size: 18px; font-weight: bold;">0.00 TRX</div>
+        <div>≈$0.00</div>
+      </div>
+      <button class="invest-button" onclick="showTariffs()">Инвестировать</button>
+    </div>
+
+    <div id="tariffPage" class="hidden">
+      <div style="color: #00ff00; font-size: 16px; font-weight: bold; margin-bottom: 12px;">Тарифы с 30% прибылью от 10 до 30 дней</div>
+      <div class="tariffs">
+        <div class="tariff">200 TRX</div>
+        <div class="tariff">300 TRX</div>
+        <div class="tariff">400 TRX</div>
+        <div class="tariff">500 TRX</div>
+        <div class="tariff">600 TRX</div>
+        <div class="tariff">800 TRX</div>
+        <div class="tariff">900 TRX</div>
+        <div class="tariff">1,000 TRX</div>
+        <div class="tariff">1,500 TRX</div>
+      </div>
+    </div>
+
+    <div id="walletPage" class="hidden">
+      <div style="text-align:center">Кошелек пока пуст</div>
+    </div>
+
+    <div id="historyPage" class="hidden">
+      <div style="text-align:center">История инвестиций появится здесь</div>
     </div>
   </div>
 
-  <!-- Страница инвестирования -->
-  <div id="invest" style="display:none;">
-    <div class="section">
-      <h3 style="color:#00ff00;">Тарифы с 30% прибылью от 10 до 30 дней</h3>
-      <div class="tariff-container">
-        <div class="tariff-button">200 TRX</div>
-        <div class="tariff-button">300 TRX</div>
-        <div class="tariff-button">400 TRX</div>
-        <div class="tariff-button">500 TRX</div>
-        <div class="tariff-button">600 TRX</div>
-        <div class="tariff-button">800 TRX</div>
-        <div class="tariff-button">900 TRX</div>
-        <div class="tariff-button">1,000 TRX</div>
-        <div class="tariff-button">1,500 TRX</div>
-      </div>
-      <div class="invest-button">Инвестировать</div>
-    </div>
-  </div>
-
-  <div class="tabs">
-    <div class="tab active">Главная</div>
-    <div class="tab">Кошелек</div>
-    <div class="tab">История</div>
+  <div class="bottom-nav">
+    <button onclick="navigateTo('home')">Главная</button>
+    <button onclick="navigateTo('wallet')">Кошелек</button>
+    <button onclick="navigateTo('history')">История</button>
   </div>
 
   <script>
-    function showInvest() {
-      document.getElementById('main').style.display = 'none';
-      document.getElementById('invest').style.display = 'block';
+    function navigateTo(page) {
+      document.getElementById('homePage').classList.add('hidden');
+      document.getElementById('tariffPage').classList.add('hidden');
+      document.getElementById('walletPage').classList.add('hidden');
+      document.getElementById('historyPage').classList.add('hidden');
+
+      if (page === 'home') document.getElementById('homePage').classList.remove('hidden');
+      if (page === 'wallet') document.getElementById('walletPage').classList.remove('hidden');
+      if (page === 'history') document.getElementById('historyPage').classList.remove('hidden');
     }
 
-    // Пример: подтянуть имя и аватарку Telegram
-    window.onload = function () {
-      if (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe.user) {
-        const user = Telegram.WebApp.initDataUnsafe.user;
-        document.getElementById('username').textContent = user.first_name + ' ' + (user.last_name || '');
-        document.getElementById('avatar').src = user.photo_url;
+    function showTariffs() {
+      navigateTo('tariff');
+      document.getElementById('tariffPage').classList.remove('hidden');
+    }
+
+    // Получаем данные из Telegram WebApp
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.expand();
+      const user = tg.initDataUnsafe?.user;
+      if (user) {
+        document.getElementById("userName").textContent = `${user.first_name || ''} ${user.last_name || ''}`;
+        if (user.photo_url) document.getElementById("userPhoto").src = user.photo_url;
       }
-    };
+    }
   </script>
 </body>
 </html>
