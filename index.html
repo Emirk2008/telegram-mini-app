@@ -99,6 +99,7 @@
         <div id="userName">Имя Фамилия</div>
       </div>
     </div>
+    <pre id="debug" style="white-space: pre-wrap; color: lime; font-size: 12px;"></pre>
 
     <div id="homePage">
       <div class="balance">
@@ -212,6 +213,8 @@
       if (tg) {
         tg.expand();
         const user = tg.initDataUnsafe?.user;
+        document.getElementById("debug").textContent = JSON.stringify(tg.initDataUnsafe, null, 2);
+        
         if (user) {
           const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
           document.getElementById("userName").textContent = fullName;
