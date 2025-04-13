@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TRX App</title>
@@ -209,21 +211,37 @@
       });
 
       // Telegram WebApp user info
-      const tg = window.Telegram?.WebApp;
-      if (tg) {
-        tg.expand();
-        const user = tg.initDataUnsafe?.user;
-        document.getElementById("debug").textContent = JSON.stringify(tg.initDataUnsafe, null, 2);
-        
-        if (user) {
-          const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-          document.getElementById("userName").textContent = fullName;
-          if (user.photo_url) {
-            document.getElementById("userPhoto").src = user.photo_url;
-          }
-        }
-      }
-    });
+     <script>
+  document.addEventListener("DOMContentLoaded", () => {
+    updateBalanceDisplay();
+
+    const debug = document.getElementById("debug");
+    const tg = window.Telegram?.WebApp;
+
+    if (!tg) {
+      debug.textContent = "❌ Telegram WebApp не найден. Вы точно открыли через Telegram?";
+      return;
+    }
+
+    tg.ready();
+    tg.expand();
+
+    const user = tg.initDataUnsafe?.user;
+
+    if (!user) {
+      debug.textContent = "❌ Данные пользователя не получены.\nПроверьте, что вы открыли приложение через Telegram.";
+      return;
+    }
+
+    debug.textContent = `✅ Данные получены:\n` + JSON.stringify(user, null, 2);
+
+    document.getElementById("userName").textContent =
+      `${user.first_name || ''} ${user.last_name || ''}`.trim();
+
+    if (user.photo_url) {
+      document.getElementById("userPhoto").src = user.photo_url;
+    }
+  });
   </script>
 </body>
 </html>
