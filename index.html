@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TRX App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       margin: 0;
@@ -32,7 +31,7 @@
       padding: 16px;
       margin-bottom: 20px;
     }
-    .invest-button {
+    .invest-button, .confirm-invest-btn {
       background-color: #00ff00;
       color: #000;
       border: none;
@@ -57,6 +56,11 @@
       text-align: center;
       border-radius: 12px;
       font-weight: bold;
+      cursor: pointer;
+    }
+    .tariff.selected {
+      background-color: #00ff00;
+      color: #000;
     }
     .bottom-nav {
       position: fixed;
@@ -75,8 +79,13 @@
       font-size: 14px;
       cursor: pointer;
     }
-    .hidden {
-      display: none;
+    .hidden { display: none; }
+    .history-list { margin-top: 12px; }
+    .history-item {
+      background: #1a1a1a;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
     }
   </style>
 </head>
@@ -100,7 +109,7 @@
 
     <div id="tariffPage" class="hidden">
       <div style="color: #00ff00; font-size: 16px; font-weight: bold; margin-bottom: 12px;">Тарифы с 30% прибылью от 10 до 30 дней</div>
-      <div class="tariffs">
+      <div class="tariffs" id="tariffList">
         <div class="tariff">200 TRX</div>
         <div class="tariff">300 TRX</div>
         <div class="tariff">400 TRX</div>
@@ -111,6 +120,7 @@
         <div class="tariff">1,000 TRX</div>
         <div class="tariff">1,500 TRX</div>
       </div>
+      <button id="confirmInvestBtn" class="confirm-invest-btn hidden" onclick="confirmInvestment()">Инвестировать</button>
     </div>
 
     <div id="walletPage" class="hidden">
@@ -118,7 +128,16 @@
     </div>
 
     <div id="historyPage" class="hidden">
-      <div style="text-align:center">История инвестиций появится здесь</div>
+      <div class="profile">
+        <img class="avatar" id="historyUserPhoto" src="" alt="User">
+        <div>
+          <div id="historyUserName">Имя Фамилия</div>
+        </div>
+      </div>
+      <div style="font-weight: bold; margin-bottom: 10px;">История транзакций</div>
+      <div id="historyList">
+        <div style="text-align:center">У вас пока нет транзакций в истории.<br>Совершите свою первую инвестицию.</div>
+      </div>
     </div>
   </div>
 
@@ -129,101 +148,57 @@
   </div>
 
   <script>
+    let selectedTariff = null;
+
     function navigateTo(page) {
       document.getElementById('homePage').classList.add('hidden');
       document.getElementById('tariffPage').classList.add('hidden');
       document.getElementById('walletPage').classList.add('hidden');
       document.getElementById('historyPage').classList.add('hidden');
-
       if (page === 'home') document.getElementById('homePage').classList.remove('hidden');
       if (page === 'wallet') document.getElementById('walletPage').classList.remove('hidden');
       if (page === 'history') document.getElementById('historyPage').classList.remove('hidden');
     }
 
     function showTariffs() {
-      document.getElementById('homePage').classList.add('hidden');
+      navigateTo('tariff');
       document.getElementById('tariffPage').classList.remove('hidden');
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
-      const tg = window.Telegram.WebApp;
+    function confirmInvestment() {
+      if (!selectedTariff) return;
+      const historyList = document.getElementById('historyList');
+      historyList.innerHTML = '';
+      const newItem = document.createElement('div');
+      newItem.className = 'history-item';
+      newItem.textContent = `-${selectedTariff}`;
+      historyList.appendChild(newItem);
+      navigateTo('history');
+    }
+
+    document.querySelectorAll('.tariff').forEach(tariff => {
+      tariff.addEventListener('click', () => {
+        document.querySelectorAll('.tariff').forEach(t => t.classList.remove('selected'));
+        tariff.classList.add('selected');
+        selectedTariff = tariff.textContent;
+        document.getElementById('confirmInvestBtn').classList.remove('hidden');
+      });
+    });
+
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
       tg.expand();
       const user = tg.initDataUnsafe?.user;
       if (user) {
-        const fullName = `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim();
-        const username = user.username;
-        const avatarUrl = user.photo_url || (username ? `https://t.me/i/userpic/320/${username}.jpg` : '');
-
-        document.getElementById("userName").textContent = fullName || "Без имени";
-        if (avatarUrl) {
-          document.getElementById("userPhoto").src = avatarUrl;
+        const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+        document.getElementById("userName").textContent = fullName;
+        document.getElementById("historyUserName").textContent = fullName;
+        if (user.photo_url) {
+          document.getElementById("userPhoto").src = user.photo_url;
+          document.getElementById("historyUserPhoto").src = user.photo_url;
         }
       }
-    });
-  </script>
-  <!-- Добавь этот <script> в самый низ перед </body> -->
-<script>
-  function navigateTo(page) {
-    document.getElementById('homePage').classList.add('hidden');
-    document.getElementById('tariffPage').classList.add('hidden');
-    document.getElementById('walletPage').classList.add('hidden');
-    document.getElementById('historyPage').classList.add('hidden');
-
-    if (page === 'home') document.getElementById('homePage').classList.remove('hidden');
-    if (page === 'wallet') document.getElementById('walletPage').classList.remove('hidden');
-    if (page === 'history') document.getElementById('historyPage').classList.remove('hidden');
-  }
-
-  function showTariffs() {
-    document.getElementById('homePage').classList.add('hidden');
-    document.getElementById('tariffPage').classList.remove('hidden');
-  }
-
-  // Сохраняем в историю
-  function addToHistory(amount) {
-    const entry = `- ${amount} TRX`;
-    let history = JSON.parse(localStorage.getItem("trx_history")) || [];
-    history.unshift(entry);
-    localStorage.setItem("trx_history", JSON.stringify(history));
-    updateHistoryView();
-    navigateTo('history');
-  }
-
-  function updateHistoryView() {
-    const history = JSON.parse(localStorage.getItem("trx_history")) || [];
-    const historyPage = document.getElementById("historyPage");
-    historyPage.innerHTML = history.length
-      ? `<ul style="list-style:none; padding:0;">${history.map(item => `<li style="padding:8px 0; border-bottom:1px solid #333;">${item}</li>`).join("")}</ul>`
-      : `<div style="text-align:center">История инвестиций появится здесь</div>`;
-  }
-
-  // Telegram данные
-  window.addEventListener("DOMContentLoaded", () => {
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-    const user = tg.initDataUnsafe?.user;
-    if (user) {
-      const fullName = `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim();
-      const username = user.username;
-      const avatarUrl = user.photo_url || (username ? `https://t.me/i/userpic/320/${username}.jpg` : '');
-      document.getElementById("userName").textContent = fullName || "Без имени";
-      if (avatarUrl) {
-        document.getElementById("userPhoto").src = avatarUrl;
-      }
     }
-
-    // Назначаем действия на тарифы
-    document.querySelectorAll(".tariff").forEach(el => {
-      el.onclick = () => {
-        const amount = el.textContent.replace(",", "").replace("TRX", "").trim();
-        addToHistory(amount);
-      };
-    });
-
-    // Загружаем историю при старте
-    updateHistoryView();
-  });
-</script>
-
+  </script>
 </body>
 </html>
