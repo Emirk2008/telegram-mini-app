@@ -69,6 +69,23 @@
       font-weight: bold;
     }
 
+    .tariff-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .tariff-btn {
+      background-color: #1a1a1a;
+      border: 1px solid #00c853;
+      color: #00c853;
+      border-radius: 8px;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+    }
+
     footer {
       position: fixed;
       bottom: 0;
@@ -104,21 +121,32 @@
 <body>
 
   <header>
-    <img src="https://via.placeholder.com/50" alt="Аватар">
+    <img id="userPhoto" src="https://via.placeholder.com/50" alt="Аватар">
     <div class="username" id="userName">Имя Фамилия</div>
   </header>
 
   <div class="main">
     <div id="home" class="section active">
       <div class="card">
-        <div class="card-title">TRX</div>
-        <div class="card-value">0.00</div>
+        <div class="card-title">Ваш баланс</div>
+        <div class="card-value">0.00 TRX</div>
         <div class="card-sub">≈ $0.00</div>
       </div>
 
       <div class="card">
-        <p>Начните зарабатывать за период от 12 до 24 часов.</p>
-        <button class="green-button">Инвестировать</button>
+        <div class="card-title">Тарифы с 100% прибылью от 10 до 30 дней</div>
+        <div class="tariff-grid">
+          <div class="tariff-btn">200 TRX</div>
+          <div class="tariff-btn">300 TRX</div>
+          <div class="tariff-btn">400 TRX</div>
+          <div class="tariff-btn">800 TRX</div>
+          <div class="tariff-btn">900 TRX</div>
+          <div class="tariff-btn">1,000 TRX</div>
+          <div class="tariff-btn">1,500 TRX</div>
+          <div class="tariff-btn">500 TRX</div>
+          <div class="tariff-btn">600 TRX</div>
+        </div>
+        <button class="green-button" onclick="showSection('invest')">Инвестировать</button>
       </div>
     </div>
 
@@ -133,6 +161,13 @@
         <p>Здесь будет история транзакций</p>
       </div>
     </div>
+
+    <div id="invest" class="section">
+      <div class="card">
+        <p>Инвестиции активны. Выберите тариф и подтвердите.</p>
+        <button class="green-button">Подтвердить инвестицию</button>
+      </div>
+    </div>
   </div>
 
   <footer>
@@ -145,16 +180,22 @@
     function showSection(id, btn) {
       document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
-
-      document.querySelectorAll('footer button').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      
+      if (btn) {
+        document.querySelectorAll('footer button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+      }
     }
 
-    // Автоматически вставим имя Telegram-пользователя, если вы его передаёте
+    // Вставка данных пользователя Telegram
     window.Telegram?.WebApp?.ready();
     const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    if (tgUser?.first_name) {
-      document.getElementById("userName").textContent = `${tgUser.first_name} ${tgUser.last_name || ''}`;
+    if (tgUser) {
+      const name = `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim();
+      document.getElementById("userName").textContent = name;
+      if (tgUser.photo_url) {
+        document.getElementById("userPhoto").src = tgUser.photo_url;
+      }
     }
   </script>
 </body>
