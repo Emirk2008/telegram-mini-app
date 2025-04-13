@@ -13,7 +13,7 @@
     }
     .container {
       padding: 16px;
-      padding-bottom: 80px;
+      padding-bottom: 70px;
     }
     .profile {
       display: flex;
@@ -41,7 +41,7 @@
       border-radius: 8px;
       cursor: pointer;
       width: 100%;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     .tariffs {
       display: flex;
@@ -62,7 +62,7 @@
     }
     .tariff.selected {
       background-color: #00ff00;
-      color: black;
+      color: #000;
     }
     .bottom-nav {
       position: fixed;
@@ -73,7 +73,6 @@
       display: flex;
       justify-content: space-around;
       padding: 12px 0;
-      border-top: 1px solid #333;
     }
     .bottom-nav button {
       background: none;
@@ -82,139 +81,144 @@
       font-size: 14px;
       cursor: pointer;
     }
-    .bottom-nav button.active {
-      color: #00ff00;
-      font-weight: bold;
-    }
     .hidden { display: none; }
-    .history-entry {
-      padding: 10px 0;
-      border-bottom: 1px solid #333;
+
+    .history-item {
+      background-color: #1a1a1a;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Профиль -->
-    <div class="profile" id="profileInfo">
+    <div class="profile">
       <img class="avatar" id="userPhoto" src="" alt="User">
       <div>
         <div id="userName">Имя Фамилия</div>
       </div>
     </div>
 
-    <!-- Главная -->
     <div id="homePage">
       <div class="balance">
         <div>Ваш баланс</div>
-        <div style="margin-top: 6px; font-size: 18px; font-weight: bold;">0.00 TRX</div>
-        <div>≈$0.00</div>
+        <div style="margin-top: 6px; font-size: 18px; font-weight: bold;" id="trxBalance">0.00 TRX</div>
+        <div id="usdBalance">≈$0.00</div>
       </div>
+      <button class="invest-button" onclick="addFunds()">Пополнить +100 TRX</button>
       <button class="invest-button" onclick="showTariffs()">Инвестировать</button>
     </div>
 
-    <!-- Тарифы -->
     <div id="tariffPage" class="hidden">
       <div style="color: #00ff00; font-size: 16px; font-weight: bold; margin-bottom: 12px;">Тарифы с 30% прибылью от 10 до 30 дней</div>
       <div class="tariffs" id="tariffList">
-        <div class="tariff">200 TRX</div>
-        <div class="tariff">300 TRX</div>
-        <div class="tariff">400 TRX</div>
-        <div class="tariff">500 TRX</div>
-        <div class="tariff">600 TRX</div>
-        <div class="tariff">800 TRX</div>
-        <div class="tariff">900 TRX</div>
-        <div class="tariff">1000 TRX</div>
-        <div class="tariff">1500 TRX</div>
+        <!-- Тарифы добавим через JS -->
       </div>
-      <button class="invest-button hidden" id="confirmInvestmentBtn" onclick="confirmInvestment()">Инвестировать</button>
+      <button class="invest-button hidden" id="confirmInvestment" onclick="confirmInvestment()">Инвестировать</button>
     </div>
 
-    <!-- Кошелек -->
     <div id="walletPage" class="hidden">
       <div style="text-align:center">Кошелек пока пуст</div>
     </div>
 
-    <!-- История -->
     <div id="historyPage" class="hidden">
-      <div id="historyContent">
-        <div class="profile">
-          <img class="avatar" id="historyPhoto" src="" alt="User">
-          <div>
-            <div id="historyName">Имя Фамилия</div>
-          </div>
-        </div>
-        <div style="margin-top: 10px; font-weight: bold;">История транзакций</div>
-        <div id="transactionsList">
-          <div id="emptyHistory" style="margin-top: 20px;">У вас пока нет транзакций в истории. Совершите свою первую инвестицию.</div>
-        </div>
-      </div>
+      <div id="historyList"></div>
     </div>
   </div>
 
   <div class="bottom-nav">
-    <button id="navHome" onclick="navigateTo('home')">Главная</button>
-    <button id="navWallet" onclick="navigateTo('wallet')">Кошелек</button>
-    <button id="navHistory" onclick="navigateTo('history')">История</button>
+    <button onclick="navigateTo('home')">Главная</button>
+    <button onclick="navigateTo('wallet')">Кошелек</button>
+    <button onclick="navigateTo('history')">История</button>
   </div>
 
   <script>
+    let balance = 0;
     let selectedTariff = null;
-    let user = null;
+    let history = [];
+
+    function updateBalanceDisplay() {
+      document.getElementById("trxBalance").textContent = `${balance.toFixed(2)} TRX`;
+      document.getElementById("usdBalance").textContent = `≈$${(balance * 0.11).toFixed(2)}`;
+    }
+
+    function addFunds() {
+      balance += 100;
+      updateBalanceDisplay();
+    }
 
     function navigateTo(page) {
-      const pages = ['home', 'tariff', 'wallet', 'history'];
-      pages.forEach(p => document.getElementById(p + 'Page').classList.add('hidden'));
-      document.getElementById(page + 'Page').classList.remove('hidden');
+      document.getElementById('homePage').classList.add('hidden');
+      document.getElementById('tariffPage').classList.add('hidden');
+      document.getElementById('walletPage').classList.add('hidden');
+      document.getElementById('historyPage').classList.add('hidden');
 
-      document.querySelectorAll(".bottom-nav button").forEach(btn => btn.classList.remove("active"));
-      document.getElementById('nav' + page.charAt(0).toUpperCase() + page.slice(1)).classList.add("active");
+      if (page === 'home') document.getElementById('homePage').classList.remove('hidden');
+      if (page === 'wallet') document.getElementById('walletPage').classList.remove('hidden');
+      if (page === 'history') {
+        document.getElementById('historyPage').classList.remove('hidden');
+        renderHistory();
+      }
     }
 
     function showTariffs() {
       navigateTo('tariff');
+      document.getElementById('tariffPage').classList.remove('hidden');
     }
-
-    // Обработка выбора тарифа
-    document.querySelectorAll('.tariff').forEach(tariff => {
-      tariff.addEventListener('click', () => {
-        document.querySelectorAll('.tariff').forEach(t => t.classList.remove('selected'));
-        tariff.classList.add('selected');
-        selectedTariff = tariff.textContent;
-        document.getElementById('confirmInvestmentBtn').classList.remove('hidden');
-      });
-    });
 
     function confirmInvestment() {
-      if (!selectedTariff) return;
-
-      const list = document.getElementById('transactionsList');
-      const empty = document.getElementById('emptyHistory');
-      if (empty) empty.remove();
-
-      const entry = document.createElement('div');
-      entry.className = 'history-entry';
-      entry.textContent = `- ${selectedTariff}`;
-      list.appendChild(entry);
-
-      navigateTo('history');
+      if (selectedTariff !== null && balance >= selectedTariff) {
+        balance -= selectedTariff;
+        updateBalanceDisplay();
+        history.push(`- ${selectedTariff} TRX`);
+        navigateTo('history');
+        selectedTariff = null;
+        document.getElementById('confirmInvestment').classList.add('hidden');
+        document.querySelectorAll('.tariff').forEach(t => t.classList.remove('selected'));
+      }
     }
 
-    // Telegram WebApp user data
+    function renderHistory() {
+      const list = document.getElementById("historyList");
+      list.innerHTML = "";
+      history.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "history-item";
+        div.textContent = item;
+        list.appendChild(div);
+      });
+    }
+
+    const tariffs = [200, 300, 400, 500, 600, 800, 900, 1000, 1500];
+    const list = document.getElementById("tariffList");
+
+    tariffs.forEach(tariff => {
+      const div = document.createElement("div");
+      div.className = "tariff";
+      div.textContent = `${tariff} TRX`;
+      div.onclick = () => {
+        document.querySelectorAll('.tariff').forEach(t => t.classList.remove('selected'));
+        div.classList.add('selected');
+        selectedTariff = tariff;
+        document.getElementById("confirmInvestment").classList.remove("hidden");
+      };
+      list.appendChild(div);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateBalanceDisplay();
+    });
+
+    // Получаем данные пользователя из Telegram WebApp
     const tg = window.Telegram?.WebApp;
     if (tg) {
       tg.expand();
-      user = tg.initDataUnsafe?.user;
+      const user = tg.initDataUnsafe?.user;
       if (user) {
-        const name = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-        const photo = user.photo_url;
-
-        document.getElementById("userName").textContent = name;
-        document.getElementById("historyName").textContent = name;
-
-        if (photo) {
-          document.getElementById("userPhoto").src = photo;
-          document.getElementById("historyPhoto").src = photo;
+        document.getElementById("userName").textContent = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+        if (user.photo_url) {
+          document.getElementById("userPhoto").src = user.photo_url;
         }
       }
     }
