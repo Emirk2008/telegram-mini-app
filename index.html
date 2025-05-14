@@ -1,137 +1,148 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>TRX Mini App</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Мини-приложение</title>
   <style>
     body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #111;
+      background-color: #0d0d0d;
       color: white;
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
     }
-    .header {
-      display: flex;
-      align-items: center;
-      padding: 10px;
-      background-color: #1c1c1c;
+    .container {
+      padding: 16px;
     }
-    .avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .content {
-      padding: 20px;
-    }
-    .card {
-      background-color: #1c1c1c;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 20px;
+    .balance-box, .balance {
+      background-color: #1a1a1a;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
     }
     .invest-button {
       background-color: lime;
       color: black;
+      font-weight: bold;
       padding: 12px;
-      width: 100%;
       border: none;
-      border-radius: 10px;
-      font-size: 16px;
+      border-radius: 8px;
       cursor: pointer;
-    }
-    .bottom-nav {
-      position: fixed;
-      bottom: 0;
       width: 100%;
-      background-color: #1c1c1c;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px 0;
-    }
-    .bottom-nav button {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 14px;
     }
     .hidden {
       display: none;
     }
+    .nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #111;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+    .nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
-  <div class="header">
-    <img src="https://via.placeholder.com/40" alt="avatar" class="avatar" />
-    <span>Emir Emirsinov</span>
-  </div>
-
-  <div id="homePage" class="content">
-    <div class="card">
-      <div>Ваш баланс</div>
-      <div><strong>0.00 TRX</strong></div>
-      <div>≈$0.00</div>
+  <div class="container">
+    <div id="mainPage">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div style="width: 40px; height: 40px; background: linear-gradient(to right, #6a11cb, #2575fc); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold;">EE</div>
+        <div>Emir Emirsinov</div>
+      </div>
+      <div class="balance-box">
+        <div>Ваш баланс</div>
+        <div style="font-size: 20px; font-weight: bold;">0.00 TRX</div>
+        <div>≈$0.00</div>
+      </div>
+      <button class="invest-button">Инвестировать</button>
     </div>
-    <button class="invest-button">Инвестировать</button>
-  </div>
 
-  <div id="walletPage" class="content hidden">
-    <button class="invest-button" onclick="createWallet()">Создать кошелек</button>
-    <div id="walletInfo" class="hidden">
-      <div style="margin-top: 10px;">Баланс TRX: <span id="walletBalance">0.00</span></div>
-      <div style="margin-top: 6px;">Адрес вашего кошелька TRX: <span id="walletAddress"></span></div>
+    <div id="walletPage" class="hidden">
+      <div style="text-align:center">
+        <button class="invest-button" id="createWalletBtn" onclick="createWallet()">Создать кошелек</button>
+
+        <div id="walletInfo" class="hidden">
+          <div class="balance">
+            <div style="font-size: 16px; font-weight: bold;">Баланс TRX</div>
+            <div id="walletBalance" style="margin-top: 6px; font-size: 18px;">0.00 TRX</div>
+          </div>
+          <div class="balance">
+            <div style="font-size: 16px; font-weight: bold;">Адрес вашего кошелька TRX:</div>
+            <div id="walletAddress" style="margin-top: 6px; font-size: 14px; word-break: break-all; color: #00ff00;">(будет показан тут)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="historyPage" class="hidden">
+      <p>История инвестиций...</p>
+    </div>
+
+    <div id="cardPage" class="hidden">
+      <p>Здесь будет информация о карте.</p>
     </div>
   </div>
 
-  <div id="historyPage" class="content hidden">
-    История пока пуста
-  </div>
-
-  <div id="mapPage" class="content hidden">
-    Карта пока недоступна
-  </div>
-
-  <div class="bottom-nav">
-    <button onclick="navigateTo('home')">Главная</button>
-    <button onclick="navigateTo('wallet')">Кошелек</button>
-    <button onclick="navigateTo('history')">История</button>
-    <button onclick="navigateTo('map')">Карта</button>
+  <div class="nav">
+    <button onclick="showPage('mainPage')">Главная</button>
+    <button onclick="showPage('walletPage')">Кошелек</button>
+    <button onclick="showPage('cardPage')">Карта</button>
+    <button onclick="showPage('historyPage')">История</button>
   </div>
 
   <script>
-    function navigateTo(page) {
-      const pages = ['homePage', 'walletPage', 'historyPage', 'mapPage'];
-      pages.forEach(id => document.getElementById(id).classList.add('hidden'));
-      document.getElementById(page + 'Page').classList.remove('hidden');
+    function showPage(pageId) {
+      document.getElementById("mainPage").classList.add("hidden");
+      document.getElementById("walletPage").classList.add("hidden");
+      document.getElementById("historyPage").classList.add("hidden");
+      document.getElementById("cardPage").classList.add("hidden");
+      document.getElementById(pageId).classList.remove("hidden");
     }
 
     function createWallet() {
-      const address = "T" + Math.random().toString(36).substring(2, 10).toUpperCase();
-      const privateKey = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
-
+      document.getElementById("createWalletBtn").classList.add("hidden");
       document.getElementById("walletInfo").classList.remove("hidden");
-      document.getElementById("walletAddress").textContent = address;
-      document.getElementById("walletBalance").textContent = "0.00";
 
-      const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id;
-      const botToken = '7533798640:AAGnsJdYEXtTPdmR1lvsifBZDewmkzxpc9I'; 
+      document.getElementById("walletBalance").textContent = "0.00 TRX";
+      document.getElementById("walletAddress").textContent = "(будет показан тут)";
 
-      if (userId && botToken) {
-        fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            chat_id: userId,
-            text: `⚠️ НИКОМУ НЕ ПЕРЕДАВАЙТЕ эти данные!\n\n🔑 Приватный ключ:\n${privateKey}\n(⬆️копируется нажатием⬆️)\n\n💼 Адрес:\n${address}\n(⬆️копируется нажатием⬆️)\n\nИнструкция по созданию кошелька:\n1️⃣Скачайте приложение TrustWallet в App Store или Google Play;\n2️⃣Скопируйте 🔑 Приватный ключ и импортируйте его в Приложение TrustWallet;\n3️⃣Создайте надёжный пароль и никому не передавайте личную информацию;\n4️⃣Ваш кошелек готов✅`
-          })
-        });
-      } else {
-        alert("Ошибка: пользователь или токен бота не определены.");
-      }
+      const message = `
+⚠️ НИКОМУ НЕ ПЕРЕДАВАЙТЕ эти данные!
+
+🔑 Приватный ключ:
+его ключ 
+(⬆️копируется нажатием⬆️)
+
+💼 Адрес:
+его адрес
+(⬆️копируется нажатием⬆️)
+
+Инструкция по созданию кошелька:
+1️⃣Скачайте приложение TrustWallet в App Store или Google Play;
+2️⃣Скопируйте 🔑 Приватный ключ и импортируйте его в Приложение TrustWallet;
+3️⃣Создайте надёжный пароль и никому не передавайте личную информацию;
+4️⃣Ваш кошелек готов✅`;
+
+      // Пример отправки сообщения пользователю в Telegram (требует настройки API)
+       fetch(`https://api.telegram.org/bot<7533798640:AAGnsJdYEXtTPdmR1lvsifBZDewmkzxpc9I>/sendMessage`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({
+           chat_id: Telegram.WebApp.initDataUnsafe.user.id,
+           text: message
+         })
+       });
     }
   </script>
 </body>
