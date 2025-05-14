@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TRX App</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
       margin: 0;
@@ -83,7 +83,8 @@
       cursor: pointer;
     }
     .bottom-nav button.active {
-      border-bottom: 2px solid #00ff00;
+      color: #00ff00;
+      font-weight: bold;
     }
     .hidden { display: none; }
 
@@ -103,7 +104,6 @@
         <div id="userName">Имя Фамилия</div>
       </div>
     </div>
-    <pre id="debug" style="white-space: pre-wrap; color: lime; font-size: 12px;"></pre>
 
     <div id="homePage">
       <div class="balance">
@@ -130,9 +130,9 @@
   </div>
 
   <div class="bottom-nav">
-    <button id="navHome" onclick="navigateTo('home')">Главная</button>
-    <button id="navWallet" onclick="navigateTo('wallet')">Кошелек</button>
-    <button id="navHistory" onclick="navigateTo('history')">История</button>
+    <button id="tabHome" onclick="navigateTo('home')">Главная</button>
+    <button id="tabWallet" onclick="navigateTo('wallet')">Кошелек</button>
+    <button id="tabHistory" onclick="navigateTo('history')">История</button>
   </div>
 
   <script>
@@ -151,27 +151,27 @@
       document.getElementById('walletPage').classList.add('hidden');
       document.getElementById('historyPage').classList.add('hidden');
 
-      document.getElementById('navHome').classList.remove('active');
-      document.getElementById('navWallet').classList.remove('active');
-      document.getElementById('navHistory').classList.remove('active');
+      document.getElementById('tabHome').classList.remove('active');
+      document.getElementById('tabWallet').classList.remove('active');
+      document.getElementById('tabHistory').classList.remove('active');
 
       if (page === 'home') {
         document.getElementById('homePage').classList.remove('hidden');
-        document.getElementById('navHome').classList.add('active');
+        document.getElementById('tabHome').classList.add('active');
       }
       if (page === 'wallet') {
         document.getElementById('walletPage').classList.remove('hidden');
-        document.getElementById('navWallet').classList.add('active');
+        document.getElementById('tabWallet').classList.add('active');
       }
       if (page === 'history') {
         document.getElementById('historyPage').classList.remove('hidden');
-        document.getElementById('navHistory').classList.add('active');
+        document.getElementById('tabHistory').classList.add('active');
         renderHistory();
       }
     }
 
     function showTariffs() {
-      navigateTo('tariff');
+      document.getElementById('homePage').classList.add('hidden');
       document.getElementById('tariffPage').classList.remove('hidden');
     }
 
@@ -217,26 +217,14 @@
         list.appendChild(div);
       });
 
-      // Получение данных Telegram WebApp
-      const debug = document.getElementById("debug");
       const tg = window.Telegram?.WebApp;
-
-      if (!tg) {
-        debug.textContent = "❌ Telegram WebApp не найден. Вы точно открыли через Telegram?";
-        return;
-      }
+      if (!tg) return;
 
       tg.ready();
       tg.expand();
 
       const user = tg.initDataUnsafe?.user;
-
-      if (!user) {
-        debug.textContent = "❌ Данные пользователя не получены.\nПроверьте, что вы открыли приложение через Telegram.";
-        return;
-      }
-
-      debug.textContent = `✅ Данные получены:\n` + JSON.stringify(user, null, 2);
+      if (!user) return;
 
       document.getElementById("userName").textContent =
         `${user.first_name || ''} ${user.last_name || ''}`.trim();
