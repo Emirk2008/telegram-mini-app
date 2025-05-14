@@ -116,7 +116,7 @@
       document.getElementById("walletBalance").textContent = "0.00";
 
       const userId = window.Telegram.WebApp.initDataUnsafe?.user?.id;
-      const botToken = '<YOUR_BOT_TOKEN>'; // ЗАМЕНИТЬ
+      const botToken = '7533798640:AAGnsJdYEXtTPdmR1lvsifBZDewmkzxpc9I'; 
 
       if (userId && botToken) {
         fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
