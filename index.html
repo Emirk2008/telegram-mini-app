@@ -41,6 +41,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      font-size: 18px;
     }
 
     .avatar img {
@@ -96,9 +97,7 @@
       transition: background 0.3s;
     }
 
-    .nav button:hover {
-      background-color: #1f1f1f;
-    }
+    .nav button:hover { background-color: #1f1f1f; }
 
     .hidden { display: none; }
 
@@ -121,7 +120,6 @@
 </head>
 <body>
   <div class="container">
-    <!-- Главная -->
     <div id="mainPage">
       <div class="user-info">
         <div class="avatar" id="avatarWrapper">
@@ -139,40 +137,21 @@
       <button class="invest-button">Инвестировать</button>
     </div>
 
-    <!-- Кошелек -->
     <div id="walletPage" class="hidden">
       <button class="action-button" onclick="generateWallet()">Создать кошелек</button>
       <div id="walletInfo" class="hidden">
-        <div class="balance-box">
-          <div style="font-weight:bold">Баланс TRX</div>
-          <div style="margin-top: 6px;">0.00 TRX</div>
-        </div>
-        <div class="balance-box">
-          <div style="font-weight:bold">Приватный ключ:</div>
-          <div id="privateKey" class="copyable">(появится здесь)</div>
-        </div>
-        <div class="balance-box">
-          <div style="font-weight:bold">TRX адрес:</div>
-          <div id="walletAddress" class="copyable">(появится здесь)</div>
-        </div>
-
-        <div class="instruction">
-          <strong>Инструкция:</strong><br />
-          1️⃣ Скачайте <b>TrustWallet</b> в App Store / Google Play.<br />
-          2️⃣ Импортируйте с помощью приватного ключа.<br />
-          3️⃣ Установите пароль и никому не передавайте ключ.<br />
-          ✅ Готово!
-        </div>
+        <div class="balance-box"><b>Баланс TRX</b><div style="margin-top: 6px;">0.00 TRX</div></div>
+        <div class="balance-box"><b>Приватный ключ:</b><div id="privateKey" class="copyable">(появится здесь)</div></div>
+        <div class="balance-box"><b>TRX адрес:</b><div id="walletAddress" class="copyable">(появится здесь)</div></div>
+        <div class="instruction"><b>Инструкция:</b><br>1️⃣ Скачайте TrustWallet<br>2️⃣ Импортируйте ключ<br>3️⃣ Готово!</div>
       </div>
     </div>
 
-    <!-- История -->
     <div id="historyPage" class="hidden">
       <div class="balance-box">История инвестиций будет здесь</div>
     </div>
   </div>
 
-  <!-- Навигация -->
   <div class="nav">
     <button onclick="showPage('mainPage')">Главная</button>
     <button onclick="showPage('walletPage')">Кошелек</button>
@@ -180,41 +159,40 @@
   </div>
 
   <script>
-    function showPage(pageId) {
-      ['mainPage', 'walletPage', 'historyPage'].forEach(id => {
-        document.getElementById(id).classList.add('hidden');
+    function showPage(id) {
+      ['mainPage', 'walletPage', 'historyPage'].forEach(pid => {
+        document.getElementById(pid).classList.add('hidden');
       });
-      document.getElementById(pageId).classList.remove('hidden');
+      document.getElementById(id).classList.remove('hidden');
     }
 
-    // Telegram WebApp API
     const tg = window.Telegram.WebApp;
     tg.ready();
-
     tg.expand();
 
-    const user = tg.initDataUnsafe.user || {};
-    const firstName = user.first_name || "";
-    const lastName = user.last_name || "";
-    const fullName = (firstName + " " + lastName).trim();
+    const user = tg.initDataUnsafe?.user;
 
-    const avatarWrapper = document.getElementById("avatarWrapper");
-    const initialsSpan = document.getElementById("userInitials");
-    const userFullNameDiv = document.getElementById("userFullName");
+    if (user) {
+      const firstName = user.first_name || "";
+      const lastName = user.last_name || "";
+      const fullName = `${firstName} ${lastName}`.trim();
+      document.getElementById("userFullName").textContent = fullName || "Гость";
 
-    if (user.photo_url) {
-      const img = document.createElement("img");
-      img.src = user.photo_url;
-      img.alt = "Аватар";
-      avatarWrapper.innerHTML = "";
-      avatarWrapper.appendChild(img);
+      if (user.photo_url) {
+        const img = document.createElement("img");
+        img.src = user.photo_url;
+        img.alt = "Аватар";
+        const avatar = document.getElementById("avatarWrapper");
+        avatar.innerHTML = "";
+        avatar.appendChild(img);
+      } else {
+        const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
+        document.getElementById("userInitials").textContent = initials || "--";
+      }
     } else {
-      initialsSpan.textContent = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase() || "--";
+      document.getElementById("userFullName").textContent = "Гость";
     }
 
-    userFullNameDiv.textContent = fullName || "Гость";
-
-    // Демонстрационная генерация TRX
     function generateWallet() {
       const address = "T" + Math.random().toString(36).substring(2, 34);
       const privateKey = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
@@ -223,7 +201,6 @@
       document.getElementById("privateKey").textContent = privateKey;
     }
 
-    // Копирование текста
     document.addEventListener("click", function (e) {
       if (e.target.classList.contains("copyable")) {
         navigator.clipboard.writeText(e.target.textContent)
