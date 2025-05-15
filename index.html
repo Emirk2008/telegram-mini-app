@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Крипто Кошелёк</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     * { box-sizing: border-box; }
 
@@ -41,7 +42,6 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 18px;
     }
 
     .avatar img {
@@ -97,7 +97,9 @@
       transition: background 0.3s;
     }
 
-    .nav button:hover { background-color: #1f1f1f; }
+    .nav button:hover {
+      background-color: #1f1f1f;
+    }
 
     .hidden { display: none; }
 
@@ -140,10 +142,26 @@
     <div id="walletPage" class="hidden">
       <button class="action-button" onclick="generateWallet()">Создать кошелек</button>
       <div id="walletInfo" class="hidden">
-        <div class="balance-box"><b>Баланс TRX</b><div style="margin-top: 6px;">0.00 TRX</div></div>
-        <div class="balance-box"><b>Приватный ключ:</b><div id="privateKey" class="copyable">(появится здесь)</div></div>
-        <div class="balance-box"><b>TRX адрес:</b><div id="walletAddress" class="copyable">(появится здесь)</div></div>
-        <div class="instruction"><b>Инструкция:</b><br>1️⃣ Скачайте TrustWallet<br>2️⃣ Импортируйте ключ<br>3️⃣ Готово!</div>
+        <div class="balance-box">
+          <div style="font-weight:bold">Баланс TRX</div>
+          <div style="margin-top: 6px;">0.00 TRX</div>
+        </div>
+        <div class="balance-box">
+          <div style="font-weight:bold">Приватный ключ:</div>
+          <div id="privateKey" class="copyable">(появится здесь)</div>
+        </div>
+        <div class="balance-box">
+          <div style="font-weight:bold">TRX адрес:</div>
+          <div id="walletAddress" class="copyable">(появится здесь)</div>
+        </div>
+
+        <div class="instruction">
+          <strong>Инструкция:</strong><br />
+          1️⃣ Скачайте <b>TrustWallet</b> в App Store / Google Play.<br />
+          2️⃣ Импортируйте с помощью приватного ключа.<br />
+          3️⃣ Установите пароль и никому не передавайте ключ.<br />
+          ✅ Готово!
+        </div>
       </div>
     </div>
 
@@ -159,38 +177,43 @@
   </div>
 
   <script>
-    function showPage(id) {
-      ['mainPage', 'walletPage', 'historyPage'].forEach(pid => {
-        document.getElementById(pid).classList.add('hidden');
+    function showPage(pageId) {
+      ['mainPage', 'walletPage', 'historyPage'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
       });
-      document.getElementById(id).classList.remove('hidden');
+      document.getElementById(pageId).classList.remove('hidden');
     }
 
+    // Telegram WebApp API
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
 
     const user = tg.initDataUnsafe?.user;
 
+    const avatarWrapper = document.getElementById("avatarWrapper");
+    const initialsSpan = document.getElementById("userInitials");
+    const userFullNameDiv = document.getElementById("userFullName");
+
     if (user) {
       const firstName = user.first_name || "";
       const lastName = user.last_name || "";
-      const fullName = `${firstName} ${lastName}`.trim();
-      document.getElementById("userFullName").textContent = fullName || "Гость";
+      const fullName = (firstName + " " + lastName).trim();
+
+      userFullNameDiv.textContent = fullName || "Гость";
 
       if (user.photo_url) {
         const img = document.createElement("img");
         img.src = user.photo_url;
         img.alt = "Аватар";
-        const avatar = document.getElementById("avatarWrapper");
-        avatar.innerHTML = "";
-        avatar.appendChild(img);
+        avatarWrapper.innerHTML = "";
+        avatarWrapper.appendChild(img);
       } else {
-        const initials = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase();
-        document.getElementById("userInitials").textContent = initials || "--";
+        initialsSpan.textContent = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase() || "--";
       }
     } else {
-      document.getElementById("userFullName").textContent = "Гость";
+      userFullNameDiv.textContent = "Гость";
+      initialsSpan.textContent = "--";
     }
 
     function generateWallet() {
