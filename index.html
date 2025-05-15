@@ -15,11 +15,22 @@
     .container {
       padding: 16px;
     }
-    .balance-box, .balance {
+    .avatar {
+      width: 50px;
+      height: 50px;
+      background: linear-gradient(to right, #6a11cb, #2575fc);
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+    .balance-box {
       background-color: #1a1a1a;
-      border-radius: 12px;
+      border-radius: 20px;
       padding: 16px;
-      margin-bottom: 16px;
+      margin-top: 16px;
     }
     .invest-button {
       background-color: lime;
@@ -30,9 +41,7 @@
       border-radius: 8px;
       cursor: pointer;
       width: 100%;
-    }
-    .hidden {
-      display: none;
+      margin-top: 16px;
     }
     .nav {
       position: fixed;
@@ -55,95 +64,24 @@
 </head>
 <body>
   <div class="container">
-    <div id="mainPage">
-      <div style="display: flex; align-items: center; gap: 10px;">
-        <div style="width: 40px; height: 40px; background: linear-gradient(to right, #6a11cb, #2575fc); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: bold;">EE</div>
-        <div>Emir Emirsinov</div>
-      </div>
-      <div class="balance-box">
-        <div>Ваш баланс</div>
-        <div style="font-size: 20px; font-weight: bold;">0.00 TRX</div>
-        <div>≈$0.00</div>
-      </div>
-      <button class="invest-button">Инвестировать</button>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div class="avatar">EE</div>
+      <div style="font-size: 16px;">Emir Emirsinov</div>
     </div>
 
-    <div id="walletPage" class="hidden">
-      <div style="text-align:center">
-        <button class="invest-button" id="createWalletBtn" onclick="createWallet()">Создать кошелек</button>
-
-        <div id="walletInfo" class="hidden">
-          <div class="balance">
-            <div style="font-size: 16px; font-weight: bold;">Баланс TRX</div>
-            <div id="walletBalance" style="margin-top: 6px; font-size: 18px;">0.00 TRX</div>
-          </div>
-          <div class="balance">
-            <div style="font-size: 16px; font-weight: bold;">Адрес вашего кошелька TRX:</div>
-            <div id="walletAddress" style="margin-top: 6px; font-size: 14px; word-break: break-all; color: #00ff00;">(будет показан тут)</div>
-          </div>
-        </div>
-      </div>
+    <div class="balance-box">
+      <div style="font-size: 14px;">Ваш баланс</div>
+      <div style="font-size: 20px; font-weight: bold;">0.00 TRX</div>
+      <div style="font-size: 14px;">≈$0.00</div>
     </div>
 
-    <div id="historyPage" class="hidden">
-      <p>История инвестиций...</p>
-    </div>
-
-    <div id="cardPage" class="hidden">
-      <p>Здесь будет информация о карте.</p>
-    </div>
+    <button class="invest-button">Инвестировать</button>
   </div>
 
   <div class="nav">
-    <button onclick="showPage('mainPage')">Главная</button>
-    <button onclick="showPage('walletPage')">Кошелек</button>
-    <button onclick="showPage('cardPage')">Карта</button>
-    <button onclick="showPage('historyPage')">История</button>
+    <button>Главная</button>
+    <button>Кошелек</button>
+    <button>История</button>
   </div>
-
-  <script>
-    function showPage(pageId) {
-      document.getElementById("mainPage").classList.add("hidden");
-      document.getElementById("walletPage").classList.add("hidden");
-      document.getElementById("historyPage").classList.add("hidden");
-      document.getElementById("cardPage").classList.add("hidden");
-      document.getElementById(pageId).classList.remove("hidden");
-    }
-
-    function createWallet() {
-      document.getElementById("createWalletBtn").classList.add("hidden");
-      document.getElementById("walletInfo").classList.remove("hidden");
-
-      document.getElementById("walletBalance").textContent = "0.00 TRX";
-      document.getElementById("walletAddress").textContent = "(будет показан тут)";
-
-      const message = `
-⚠️ НИКОМУ НЕ ПЕРЕДАВАЙТЕ эти данные!
-
-🔑 Приватный ключ:
-его ключ 
-(⬆️копируется нажатием⬆️)
-
-💼 Адрес:
-его адрес
-(⬆️копируется нажатием⬆️)
-
-Инструкция по созданию кошелька:
-1️⃣Скачайте приложение TrustWallet в App Store или Google Play;
-2️⃣Скопируйте 🔑 Приватный ключ и импортируйте его в Приложение TrustWallet;
-3️⃣Создайте надёжный пароль и никому не передавайте личную информацию;
-4️⃣Ваш кошелек готов✅`;
-
-      // Пример отправки сообщения пользователю в Telegram (требует настройки API)
-       fetch(`https://api.telegram.org/bot<7533798640:AAGnsJdYEXtTPdmR1lvsifBZDewmkzxpc9I>/sendMessage`, {
-         method: 'POST',
-         headers: { 'Content-Type': 'application/json' },
-         body: JSON.stringify({
-           chat_id: Telegram.WebApp.initDataUnsafe.user.id,
-           text: message
-         })
-       });
-    }
-  </script>
 </body>
 </html>
