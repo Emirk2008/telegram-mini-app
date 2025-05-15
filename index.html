@@ -2,13 +2,12 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Крипто Кошелёк</title>
   <style>
     * {
       box-sizing: border-box;
     }
-
     body {
       margin: 0;
       padding: 0;
@@ -19,21 +18,18 @@
       display: flex;
       flex-direction: column;
     }
-
     .container {
       flex: 1;
       padding: 16px;
       display: flex;
       flex-direction: column;
     }
-
     .user-info {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 16px;
     }
-
     .avatar {
       width: 48px;
       height: 48px;
@@ -44,26 +40,22 @@
       justify-content: center;
       align-items: center;
     }
-
     .avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-
     .balance-box {
       background-color: rgba(15, 15, 15, 0.8);
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 20px;
     }
-
     .trx {
       font-size: 18px;
       font-weight: bold;
     }
-
-    .invest-button {
+    .invest-button, .action-button {
       background-color: #00FF00;
       color: black;
       font-weight: bold;
@@ -75,7 +67,6 @@
       width: 100%;
       margin-bottom: 20px;
     }
-
     .nav {
       display: flex;
       justify-content: space-around;
@@ -83,7 +74,6 @@
       padding: 12px 10px;
       border-top: 1px solid #222;
     }
-
     .nav button {
       flex: 1;
       margin: 0 6px;
@@ -97,44 +87,82 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-
     .nav button:hover {
       background-color: #1f1f1f;
     }
-
     .hidden {
       display: none;
+    }
+    .copyable {
+      word-break: break-word;
+      color: #00ff00;
+      cursor: pointer;
+      font-size: 14px;
+      user-select: all;
+    }
+    .instruction {
+      font-size: 13px;
+      background-color: #111;
+      padding: 12px;
+      border-radius: 10px;
+      margin-top: 16px;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Главная -->
     <div id="mainPage">
       <div class="user-info">
         <div class="avatar" id="avatarWrapper">
           <span id="userInitials">--</span>
         </div>
-        <div id="userFullName">Имя Фамилия</div>
+        <div id="userFullName">Загрузка...</div>
       </div>
-
       <div class="balance-box">
         <div>Ваш баланс</div>
         <div class="trx">0.00 TRX</div>
-        <div>≈$0.00</div>
+        <div>≈ $0.00</div>
       </div>
-
       <button class="invest-button">Инвестировать</button>
     </div>
 
+    <!-- Кошелек -->
     <div id="walletPage" class="hidden">
-      <div class="balance-box">Кошелек будет здесь</div>
+      <button class="action-button" onclick="generateWallet()">Создать кошелек</button>
+      <div id="walletInfo" class="hidden">
+        <div class="balance-box">
+          <div style="font-weight:bold">Баланс TRX</div>
+          <div style="margin-top: 6px;">0.00 TRX</div>
+        </div>
+        <div class="balance-box">
+          <div style="font-weight:bold">Приватный ключ:</div>
+          <div id="privateKey" class="copyable">(появится здесь)</div>
+        </div>
+        <div class="balance-box">
+          <div style="font-weight:bold">TRX адрес:</div>
+          <div id="walletAddress" class="copyable">(появится здесь)</div>
+        </div>
+        <div class="instruction">
+          <strong>Инструкция:</strong><br />
+          1️⃣ Скачайте <b>TrustWallet</b> в App Store / Google Play.<br />
+          2️⃣ Импортируйте с помощью приватного ключа.<br />
+          3️⃣ Установите пароль и никому не передавайте ключ.<br />
+          ✅ Готово!
+        </div>
+      </div>
     </div>
 
+    <!-- История -->
     <div id="historyPage" class="hidden">
-      <div class="balance-box">История инвестиций будет здесь</div>
+      <div class="balance-box">
+        <div style="font-weight:bold; margin-bottom: 8px;">История инвестиций</div>
+        <div>Нет данных</div>
+      </div>
     </div>
   </div>
 
+  <!-- Навигация -->
   <div class="nav">
     <button onclick="showPage('mainPage')">Главная</button>
     <button onclick="showPage('walletPage')">Кошелек</button>
@@ -149,7 +177,23 @@
       document.getElementById(pageId).classList.remove("hidden");
     }
 
-    // Telegram WebApp integration
+    function generateWallet() {
+      const address = "T" + Math.random().toString(36).substring(2, 34);
+      const privateKey = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+      document.getElementById("walletInfo").classList.remove("hidden");
+      document.getElementById("walletAddress").textContent = address;
+      document.getElementById("privateKey").textContent = privateKey;
+    }
+
+    document.addEventListener("click", function (e) {
+      if (e.target.classList.contains("copyable")) {
+        navigator.clipboard.writeText(e.target.textContent).then(() => {
+          alert("Скопировано!");
+        });
+      }
+    });
+
+    // Telegram WebApp API
     const tg = window.Telegram.WebApp;
     tg.ready();
 
@@ -159,7 +203,7 @@
     const photoUrl = user.photo_url || "";
 
     const fullName = `${firstName} ${lastName}`.trim();
-    document.getElementById('userFullName').textContent = fullName || "Гость";
+    document.getElementById("userFullName").textContent = fullName || "Гость";
 
     if (photoUrl) {
       const img = document.createElement("img");
