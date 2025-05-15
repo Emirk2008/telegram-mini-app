@@ -35,14 +35,20 @@
     }
 
     .avatar {
-      width: 42px;
-      height: 42px;
-      background: linear-gradient(to right, #6a11cb, #2575fc);
+      width: 48px;
+      height: 48px;
       border-radius: 50%;
+      overflow: hidden;
+      background: #333;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-weight: bold;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .balance-box {
@@ -105,7 +111,9 @@
   <div class="container">
     <div id="mainPage">
       <div class="user-info">
-        <div class="avatar" id="userInitials">--</div>
+        <div class="avatar" id="avatarWrapper">
+          <span id="userInitials">--</span>
+        </div>
         <div id="userFullName">Имя Фамилия</div>
       </div>
 
@@ -134,21 +142,34 @@
   </div>
 
   <script>
-    // Telegram WebApp API
-    const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe?.user || {};
-
-    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
-    const initials = `${(user.first_name || '').charAt(0)}${(user.last_name || '').charAt(0)}`.toUpperCase();
-
-    document.getElementById('userFullName').textContent = fullName || "Гость";
-    document.getElementById('userInitials').textContent = initials || "--";
-
     function showPage(pageId) {
       document.getElementById("mainPage").classList.add("hidden");
       document.getElementById("walletPage").classList.add("hidden");
       document.getElementById("historyPage").classList.add("hidden");
       document.getElementById(pageId).classList.remove("hidden");
+    }
+
+    // Telegram WebApp integration
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    const user = tg.initDataUnsafe?.user || {};
+    const firstName = user.first_name || "";
+    const lastName = user.last_name || "";
+    const photoUrl = user.photo_url || "";
+
+    const fullName = `${firstName} ${lastName}`.trim();
+    document.getElementById('userFullName').textContent = fullName || "Гость";
+
+    if (photoUrl) {
+      const img = document.createElement("img");
+      img.src = photoUrl;
+      img.alt = "Аватар";
+      document.getElementById("avatarWrapper").innerHTML = "";
+      document.getElementById("avatarWrapper").appendChild(img);
+    } else {
+      const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+      document.getElementById("userInitials").textContent = initials || "--";
     }
   </script>
 </body>
