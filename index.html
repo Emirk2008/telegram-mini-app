@@ -121,23 +121,6 @@
       border-radius: 10px;
       margin-top: 16px;
     }
-
-    .history-item {
-      background-color: rgba(255, 255, 255, 0.05);
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      display: flex;
-      flex-direction: column;
-    }
-    .history-item .amount {
-      font-weight: bold;
-      color: #00ff00;
-    }
-    .history-item .date {
-      font-size: 12px;
-      color: #888;
-    }
   </style>
 </head>
 <body>
@@ -189,23 +172,7 @@
 
     <!-- История -->
     <div id="historyPage" class="hidden">
-      <div class="balance-box">
-        <div class="history-item">
-          <div>Инвестиция</div>
-          <div class="amount">+100.00 TRX</div>
-          <div class="date">14.05.2025, 18:20</div>
-        </div>
-        <div class="history-item">
-          <div>Вывод</div>
-          <div class="amount">-50.00 TRX</div>
-          <div class="date">13.05.2025, 10:12</div>
-        </div>
-        <div class="history-item">
-          <div>Инвестиция</div>
-          <div class="amount">+70.00 TRX</div>
-          <div class="date">12.05.2025, 16:45</div>
-        </div>
-      </div>
+      <div class="balance-box">История инвестиций будет здесь</div>
     </div>
   </div>
 
@@ -224,6 +191,7 @@
       document.getElementById(pageId).classList.remove("hidden");
     }
 
+    // Telegram WebApp API
     const tg = window.Telegram.WebApp;
     tg.ready();
 
@@ -246,6 +214,7 @@
       document.getElementById("userInitials").textContent = initials || "--";
     }
 
+    // Простейшая генерация TRX адреса и приватного ключа (для демо)
     function generateWallet() {
       const address = "T" + Math.random().toString(36).substring(2, 34);
       const privateKey = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
@@ -255,6 +224,7 @@
       document.getElementById("privateKey").textContent = privateKey;
     }
 
+    // Копирование по клику
     document.addEventListener("click", function (e) {
       if (e.target.classList.contains("copyable")) {
         const text = e.target.textContent;
