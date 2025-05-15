@@ -118,6 +118,14 @@
       border-radius: 10px;
       margin-top: 16px;
     }
+
+    ul {
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 6px;
+    }
   </style>
 </head>
 <body>
@@ -136,7 +144,7 @@
         <div>≈$0.00</div>
       </div>
 
-      <button class="invest-button">Инвестировать</button>
+      <button class="invest-button" onclick="showPage('investPage')">Инвестировать</button>
     </div>
 
     <div id="walletPage" class="hidden">
@@ -165,20 +173,38 @@
       </div>
     </div>
 
+    <div id="investPage" class="hidden">
+      <div class="balance-box">
+        <div style="font-weight:bold; margin-bottom: 10px;">Выберите сумму для инвестирования:</div>
+        <button class="action-button" onclick="selectInvestment(250)">250 TRX</button>
+        <button class="action-button" onclick="selectInvestment(500)">500 TRX</button>
+        <button class="action-button" onclick="selectInvestment(600)">600 TRX</button>
+        <button class="action-button" onclick="selectInvestment(1000)">1000 TRX</button>
+      </div>
+      <div id="confirmBlock" class="balance-box hidden">
+        <div>Вы выбрали: <span id="selectedAmount">0</span> TRX</div>
+        <button class="invest-button" onclick="confirmInvestment()">Подтвердить</button>
+      </div>
+    </div>
+
     <div id="historyPage" class="hidden">
-      <div class="balance-box">История инвестиций будет здесь</div>
+      <div class="balance-box">
+        <div style="font-weight: bold;">История инвестиций:</div>
+        <ul id="historyList"></ul>
+      </div>
     </div>
   </div>
 
   <div class="nav">
     <button onclick="showPage('mainPage')">Главная</button>
     <button onclick="showPage('walletPage')">Кошелек</button>
+    <button onclick="showPage('investPage')">Инвестировать</button>
     <button onclick="showPage('historyPage')">История</button>
   </div>
 
   <script>
     function showPage(pageId) {
-      ['mainPage', 'walletPage', 'historyPage'].forEach(id => {
+      ['mainPage', 'walletPage', 'investPage', 'historyPage'].forEach(id => {
         document.getElementById(id).classList.add('hidden');
       });
       document.getElementById(pageId).classList.remove('hidden');
@@ -230,6 +256,30 @@
           .then(() => alert("Скопировано!"));
       }
     });
+
+    // Инвестиции и история
+    let selectedTrx = 0;
+    const historyList = document.getElementById("historyList");
+
+    function selectInvestment(amount) {
+      selectedTrx = amount;
+      document.getElementById("selectedAmount").textContent = amount;
+      document.getElementById("confirmBlock").classList.remove("hidden");
+    }
+
+    function confirmInvestment() {
+      if (selectedTrx > 0) {
+        const item = document.createElement("li");
+        const now = new Date().toLocaleString();
+        item.textContent = `-${selectedTrx} TRX • ${now}`;
+        item.style.color = "red";
+        historyList.appendChild(item);
+        alert(`Инвестиция ${selectedTrx} TRX подтверждена`);
+        selectedTrx = 0;
+        document.getElementById("confirmBlock").classList.add("hidden");
+        showPage("historyPage");
+      }
+    }
   </script>
 </body>
 </html>
