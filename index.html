@@ -2,12 +2,11 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Крипто Кошелёк</title>
   <style>
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
+
     body {
       margin: 0;
       padding: 0;
@@ -18,18 +17,21 @@
       display: flex;
       flex-direction: column;
     }
+
     .container {
       flex: 1;
       padding: 16px;
       display: flex;
       flex-direction: column;
     }
+
     .user-info {
       display: flex;
       align-items: center;
       gap: 12px;
       margin-bottom: 16px;
     }
+
     .avatar {
       width: 48px;
       height: 48px;
@@ -40,21 +42,25 @@
       justify-content: center;
       align-items: center;
     }
+
     .avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .balance-box {
       background-color: rgba(15, 15, 15, 0.8);
       border-radius: 16px;
       padding: 16px;
       margin-bottom: 20px;
     }
+
     .trx {
       font-size: 18px;
       font-weight: bold;
     }
+
     .invest-button, .action-button {
       background-color: #00FF00;
       color: black;
@@ -67,6 +73,7 @@
       width: 100%;
       margin-bottom: 20px;
     }
+
     .nav {
       display: flex;
       justify-content: space-around;
@@ -74,6 +81,7 @@
       padding: 12px 10px;
       border-top: 1px solid #222;
     }
+
     .nav button {
       flex: 1;
       margin: 0 6px;
@@ -87,12 +95,13 @@
       cursor: pointer;
       transition: background 0.3s;
     }
+
     .nav button:hover {
       background-color: #1f1f1f;
     }
-    .hidden {
-      display: none;
-    }
+
+    .hidden { display: none; }
+
     .copyable {
       word-break: break-word;
       color: #00ff00;
@@ -100,6 +109,7 @@
       font-size: 14px;
       user-select: all;
     }
+
     .instruction {
       font-size: 13px;
       background-color: #111;
@@ -119,11 +129,13 @@
         </div>
         <div id="userFullName">Загрузка...</div>
       </div>
+
       <div class="balance-box">
         <div>Ваш баланс</div>
         <div class="trx">0.00 TRX</div>
-        <div>≈ $0.00</div>
+        <div>≈$0.00</div>
       </div>
+
       <button class="invest-button">Инвестировать</button>
     </div>
 
@@ -143,6 +155,7 @@
           <div style="font-weight:bold">TRX адрес:</div>
           <div id="walletAddress" class="copyable">(появится здесь)</div>
         </div>
+
         <div class="instruction">
           <strong>Инструкция:</strong><br />
           1️⃣ Скачайте <b>TrustWallet</b> в App Store / Google Play.<br />
@@ -155,10 +168,7 @@
 
     <!-- История -->
     <div id="historyPage" class="hidden">
-      <div class="balance-box">
-        <div style="font-weight:bold; margin-bottom: 8px;">История инвестиций</div>
-        <div>Нет данных</div>
-      </div>
+      <div class="balance-box">История инвестиций будет здесь</div>
     </div>
   </div>
 
@@ -171,12 +181,40 @@
 
   <script>
     function showPage(pageId) {
-      document.getElementById("mainPage").classList.add("hidden");
-      document.getElementById("walletPage").classList.add("hidden");
-      document.getElementById("historyPage").classList.add("hidden");
-      document.getElementById(pageId).classList.remove("hidden");
+      ['mainPage', 'walletPage', 'historyPage'].forEach(id => {
+        document.getElementById(id).classList.add('hidden');
+      });
+      document.getElementById(pageId).classList.remove('hidden');
     }
 
+    // Telegram WebApp API
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    tg.expand();
+
+    const user = tg.initDataUnsafe.user || {};
+    const firstName = user.first_name || "";
+    const lastName = user.last_name || "";
+    const fullName = (firstName + " " + lastName).trim();
+
+    const avatarWrapper = document.getElementById("avatarWrapper");
+    const initialsSpan = document.getElementById("userInitials");
+    const userFullNameDiv = document.getElementById("userFullName");
+
+    if (user.photo_url) {
+      const img = document.createElement("img");
+      img.src = user.photo_url;
+      img.alt = "Аватар";
+      avatarWrapper.innerHTML = "";
+      avatarWrapper.appendChild(img);
+    } else {
+      initialsSpan.textContent = (firstName.charAt(0) + lastName.charAt(0)).toUpperCase() || "--";
+    }
+
+    userFullNameDiv.textContent = fullName || "Гость";
+
+    // Демонстрационная генерация TRX
     function generateWallet() {
       const address = "T" + Math.random().toString(36).substring(2, 34);
       const privateKey = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
@@ -185,36 +223,13 @@
       document.getElementById("privateKey").textContent = privateKey;
     }
 
+    // Копирование текста
     document.addEventListener("click", function (e) {
       if (e.target.classList.contains("copyable")) {
-        navigator.clipboard.writeText(e.target.textContent).then(() => {
-          alert("Скопировано!");
-        });
+        navigator.clipboard.writeText(e.target.textContent)
+          .then(() => alert("Скопировано!"));
       }
     });
-
-    // Telegram WebApp API
-    const tg = window.Telegram.WebApp;
-    tg.ready();
-
-    const user = tg.initDataUnsafe?.user || {};
-    const firstName = user.first_name || "";
-    const lastName = user.last_name || "";
-    const photoUrl = user.photo_url || "";
-
-    const fullName = `${firstName} ${lastName}`.trim();
-    document.getElementById("userFullName").textContent = fullName || "Гость";
-
-    if (photoUrl) {
-      const img = document.createElement("img");
-      img.src = photoUrl;
-      img.alt = "Аватар";
-      document.getElementById("avatarWrapper").innerHTML = "";
-      document.getElementById("avatarWrapper").appendChild(img);
-    } else {
-      const initials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
-      document.getElementById("userInitials").textContent = initials || "--";
-    }
   </script>
 </body>
 </html>
