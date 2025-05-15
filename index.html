@@ -214,7 +214,7 @@
       document.getElementById("userInitials").textContent = initials || "--";
     }
 
-    // Простейшая генерация TRX адреса и приватного ключа (для демо)
+    // Генерация кошелька
     function generateWallet() {
       const address = "T" + Math.random().toString(36).substring(2, 34);
       const privateKey = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
@@ -224,7 +224,7 @@
       document.getElementById("privateKey").textContent = privateKey;
     }
 
-    // Копирование по клику
+    // Копирование
     document.addEventListener("click", function (e) {
       if (e.target.classList.contains("copyable")) {
         const text = e.target.textContent;
