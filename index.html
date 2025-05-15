@@ -5,34 +5,38 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Интерфейс</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: linear-gradient(to top left, #0F0F0F 90%, #00C8FF14);
+      background: linear-gradient(to top left, #0F0F0F 95%, #00C8FF14);
       color: white;
       height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     .container {
       flex: 1;
-      padding: 20px;
-      max-width: 400px;
-      margin: auto;
+      padding: 16px;
       display: flex;
       flex-direction: column;
+      max-width: 100%;
     }
 
     .user-info {
       display: flex;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
     .avatar {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       background-color: rgba(15, 15, 15, 0.7);
       border-radius: 50%;
       display: flex;
@@ -46,10 +50,10 @@
       background-color: rgba(15, 15, 15, 0.7);
       border-radius: 16px;
       padding: 16px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
-    .balance-box .trx {
+    .trx {
       font-size: 18px;
       font-weight: bold;
     }
@@ -58,8 +62,8 @@
       background-color: #00FF00;
       color: black;
       font-weight: bold;
-      font-size: 14px;
-      padding: 12px;
+      font-size: 16px;
+      padding: 14px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -68,26 +72,28 @@
     }
 
     .nav {
-      background-color: rgba(15, 15, 15, 0.7);
       display: flex;
       justify-content: space-around;
-      padding: 10px;
-      border-radius: 12px 12px 0 0;
+      background-color: rgba(15, 15, 15, 0.9);
+      padding: 12px 0;
+      border-top: 1px solid #222;
     }
 
     .nav button {
-      background: none;
-      border: none;
+      flex: 1;
+      margin: 0 6px;
+      font-size: 15px;
+      padding: 12px 0;
+      background-color: #0F0F0F;
       color: white;
+      border: none;
+      border-radius: 10px;
       font-weight: bold;
       cursor: pointer;
-      padding: 8px 16px;
-      border-radius: 8px;
-      transition: background 0.3s;
     }
 
     .nav button:hover {
-      background-color: #222;
+      background-color: #1a1a1a;
     }
 
     .hidden {
@@ -128,16 +134,15 @@
   </div>
 
   <script>
-    // Telegram user data
+    // Telegram WebApp API
     const tg = window.Telegram.WebApp;
-    const user = tg.initDataUnsafe.user;
+    const user = tg.initDataUnsafe?.user || {};
 
-    // Имя, фамилия и инициалы
     const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
     const initials = `${(user.first_name || '').charAt(0)}${(user.last_name || '').charAt(0)}`.toUpperCase();
 
-    document.getElementById('userFullName').textContent = fullName;
-    document.getElementById('userInitials').textContent = initials;
+    document.getElementById('userFullName').textContent = fullName || "Гость";
+    document.getElementById('userInitials').textContent = initials || "--";
 
     function showPage(pageId) {
       document.getElementById('mainPage').classList.add('hidden');
