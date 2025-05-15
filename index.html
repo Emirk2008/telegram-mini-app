@@ -6,6 +6,7 @@
   <title>Крипто Кошелёк</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
+    /* Стили остаются теми же, как в предыдущем ответе */
     * { box-sizing: border-box; }
 
     body {
@@ -210,7 +211,6 @@
       document.getElementById(pageId).classList.remove('hidden');
     }
 
-    // Telegram WebApp API
     const tg = window.Telegram.WebApp;
     tg.ready();
     tg.expand();
@@ -225,7 +225,6 @@
       const firstName = user.first_name || "";
       const lastName = user.last_name || "";
       const fullName = (firstName + " " + lastName).trim();
-
       userFullNameDiv.textContent = fullName || "Гость";
 
       if (user.photo_url) {
@@ -257,7 +256,7 @@
       }
     });
 
-    // Инвестиции и история
+    // История с localStorage
     let selectedTrx = 0;
     const historyList = document.getElementById("historyList");
 
@@ -269,17 +268,37 @@
 
     function confirmInvestment() {
       if (selectedTrx > 0) {
-        const item = document.createElement("li");
         const now = new Date().toLocaleString();
-        item.textContent = `-${selectedTrx} TRX • ${now}`;
-        item.style.color = "red";
-        historyList.appendChild(item);
+        const entry = `-${selectedTrx} TRX • ${now}`;
+
+        // Добавляем в DOM
+        const li = document.createElement("li");
+        li.textContent = entry;
+        li.style.color = "red";
+        historyList.appendChild(li);
+
+        // Сохраняем в localStorage
+        const existing = JSON.parse(localStorage.getItem("investmentHistory") || "[]");
+        existing.push(entry);
+        localStorage.setItem("investmentHistory", JSON.stringify(existing));
+
         alert(`Инвестиция ${selectedTrx} TRX подтверждена`);
         selectedTrx = 0;
         document.getElementById("confirmBlock").classList.add("hidden");
         showPage("historyPage");
       }
     }
+
+    // Загружаем историю при старте
+    window.addEventListener("load", () => {
+      const savedHistory = JSON.parse(localStorage.getItem("investmentHistory") || "[]");
+      savedHistory.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = entry;
+        li.style.color = "red";
+        historyList.appendChild(li);
+      });
+    });
   </script>
 </body>
 </html>
