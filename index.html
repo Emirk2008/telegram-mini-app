@@ -3,88 +3,83 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Мини-приложение</title>
+  <title>Интерфейс</title>
   <style>
     body {
-      background: linear-gradient(to top left, #0f0f0f 90%, #00c8ff14);
-      color: white;
-      font-family: sans-serif;
       margin: 0;
       padding: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to top left, #0F0F0F 90%, #00C8FF14);
+      color: white;
     }
     .container {
+      width: 402px;
+      margin: 0 auto;
+      height: 874px;
+      position: relative;
       padding: 20px;
+      box-sizing: border-box;
+    }
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
     }
     .avatar {
       width: 59px;
       height: 59px;
-      background: #0f0f0f;
-      opacity: 0.7;
+      background-color: rgba(15, 15, 15, 0.7);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
+      font-size: 14px;
       font-weight: bold;
+    }
+    .username {
+      margin-left: 12px;
       font-size: 16px;
     }
     .balance-box {
-      background-color: #0f0f0f;
-      opacity: 0.7;
+      background-color: rgba(15, 15, 15, 0.7);
       border-radius: 20px;
-      padding: 16px;
-      margin-top: 24px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .balance-box div {
+      margin-bottom: 10px;
+    }
+    .balance-box .trx {
+      font-size: 18px;
+      font-weight: bold;
     }
     .invest-button {
-      background-color: #00ff00;
-      color: black;
-      font-weight: bold;
-      padding: 14px;
+      width: 100%;
+      height: 40px;
+      background-color: #00FF00;
       border: none;
       border-radius: 8px;
-      cursor: pointer;
-      width: 100%;
-      margin-top: 20px;
-    }
-    .nav {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #0f0f0f;
-      opacity: 0.7;
-      display: flex;
-      justify-content: space-around;
-      padding: 14px 0;
-    }
-    .nav button {
-      background: none;
-      border: none;
-      color: white;
+      font-size: 16px;
       font-weight: bold;
+      color: black;
       cursor: pointer;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div style="display: flex; align-items: center; gap: 12px;">
+    <div class="avatar-row">
       <div class="avatar">EE</div>
-      <div style="font-size: 16px;">Emir Emirsinov</div>
+      <div class="username">Emir Emirsinov</div>
     </div>
 
     <div class="balance-box">
-      <div style="font-size: 14px;">Ваш баланс</div>
-      <div style="font-size: 20px; font-weight: bold;">0.00 TRX</div>
-      <div style="font-size: 14px;">≈$0.00</div>
+      <div>Ваш баланс</div>
+      <div class="trx">0.00 TRX</div>
+      <div>≈$0.00</div>
     </div>
 
     <button class="invest-button">Инвестировать</button>
-  </div>
-
-  <div class="nav">
-    <button>Главная</button>
-    <button>Кошелек</button>
-    <button>История</button>
   </div>
 </body>
 </html>
