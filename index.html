@@ -1,85 +1,150 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Интерфейс</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
       font-family: Arial, sans-serif;
       background: linear-gradient(to top left, #0F0F0F 90%, #00C8FF14);
       color: white;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+
     .container {
-      width: 402px;
-      margin: 0 auto;
-      height: 874px;
-      position: relative;
+      flex: 1;
       padding: 20px;
-      box-sizing: border-box;
+      max-width: 400px;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
     }
-    .avatar-row {
+
+    .user-info {
       display: flex;
       align-items: center;
       margin-bottom: 20px;
     }
+
     .avatar {
-      width: 59px;
-      height: 59px;
+      width: 40px;
+      height: 40px;
       background-color: rgba(15, 15, 15, 0.7);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 14px;
       font-weight: bold;
+      margin-right: 10px;
     }
-    .username {
-      margin-left: 12px;
-      font-size: 16px;
-    }
+
     .balance-box {
       background-color: rgba(15, 15, 15, 0.7);
-      border-radius: 20px;
-      padding: 20px;
+      border-radius: 16px;
+      padding: 16px;
       margin-bottom: 20px;
     }
-    .balance-box div {
-      margin-bottom: 10px;
-    }
+
     .balance-box .trx {
       font-size: 18px;
       font-weight: bold;
     }
+
     .invest-button {
-      width: 100%;
-      height: 40px;
       background-color: #00FF00;
+      color: black;
+      font-weight: bold;
+      font-size: 14px;
+      padding: 12px;
       border: none;
       border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      color: black;
       cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .nav {
+      background-color: rgba(15, 15, 15, 0.7);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 8px;
+      transition: background 0.3s;
+    }
+
+    .nav button:hover {
+      background-color: #222;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="avatar-row">
-      <div class="avatar">EE</div>
-      <div class="username">Emir Emirsinov</div>
+    <div id="mainPage">
+      <div class="user-info">
+        <div class="avatar" id="userInitials">--</div>
+        <div id="userFullName">Имя Фамилия</div>
+      </div>
+
+      <div class="balance-box">
+        <div>Ваш баланс</div>
+        <div class="trx">0.00 TRX</div>
+        <div>≈$0.00</div>
+      </div>
+
+      <button class="invest-button">Инвестировать</button>
     </div>
 
-    <div class="balance-box">
-      <div>Ваш баланс</div>
-      <div class="trx">0.00 TRX</div>
-      <div>≈$0.00</div>
+    <div id="walletPage" class="hidden">
+      <div class="balance-box">Здесь будет кошелек</div>
     </div>
 
-    <button class="invest-button">Инвестировать</button>
+    <div id="historyPage" class="hidden">
+      <div class="balance-box">История инвестиций</div>
+    </div>
   </div>
+
+  <div class="nav">
+    <button onclick="showPage('mainPage')">Главная</button>
+    <button onclick="showPage('walletPage')">Кошелек</button>
+    <button onclick="showPage('historyPage')">История</button>
+  </div>
+
+  <script>
+    // Telegram user data
+    const tg = window.Telegram.WebApp;
+    const user = tg.initDataUnsafe.user;
+
+    // Имя, фамилия и инициалы
+    const fullName = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+    const initials = `${(user.first_name || '').charAt(0)}${(user.last_name || '').charAt(0)}`.toUpperCase();
+
+    document.getElementById('userFullName').textContent = fullName;
+    document.getElementById('userInitials').textContent = initials;
+
+    function showPage(pageId) {
+      document.getElementById('mainPage').classList.add('hidden');
+      document.getElementById('walletPage').classList.add('hidden');
+      document.getElementById('historyPage').classList.add('hidden');
+      document.getElementById(pageId).classList.remove('hidden');
+    }
+  </script>
 </body>
 </html>
